@@ -34,7 +34,7 @@ fn main() -> Result<(), SetLoggerError> {
     //     trace!("sum: {:?} ", _sum);
     // }
     let arr = vec!["a","b","c","a","b","c"];
-    let res = lib::reuse_interval(arr);
+    let (res,map) = lib::reuse_interval(arr);
     println!("{:?}", res);
 
     Ok(())
