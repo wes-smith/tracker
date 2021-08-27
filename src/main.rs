@@ -6,6 +6,7 @@ use log4rs::{
     config::{Appender, Config, Root},
     encode::pattern::PatternEncoder,
 };
+mod lib;
 
 fn main() -> Result<(), SetLoggerError> {
     let file_path = "foo.log";
@@ -24,10 +25,17 @@ fn main() -> Result<(), SetLoggerError> {
         .unwrap();
 
     let _handle = log4rs::init_config(config)?;
+    // log4rs::init_config(config).unwrap();
 
-    for i in 0..10 {
-        trace!("{}", i.to_string());
-    }
+    // let arr = vec![0,1,2,3,4,5,6,7,8,9];
+    // let mut _sum = 0;
+    // for i in 0..10 {
+    //     _sum += arr[i];
+    //     trace!("sum: {:?} ", _sum);
+    // }
+    let arr = vec!["a","b","c","a","b","c"];
+    let res = lib::reuse_interval(arr);
+    println!("{:?}", res);
 
     Ok(())
 }
