@@ -1,8 +1,6 @@
 use log::{trace, LevelFilter, SetLoggerError};
 use log4rs::{
-    append::{
-        file::FileAppender,
-    },
+    append::file::FileAppender,
     config::{Appender, Config, Root},
     encode::pattern::PatternEncoder,
 };
@@ -11,17 +9,14 @@ mod lib;
 fn main() -> Result<(), SetLoggerError> {
     let file_path = "foo.log";
 
-    let logfile = FileAppender::builder().encoder(Box::new(PatternEncoder::new("{m}\n")))
+    let logfile = FileAppender::builder()
+        .encoder(Box::new(PatternEncoder::new("{m}\n")))
         .build(file_path)
         .unwrap();
 
     let config = Config::builder()
         .appender(Appender::builder().build("trace", Box::new(logfile)))
-        .build(
-            Root::builder()
-                .appender("trace")
-                .build(LevelFilter::Trace),
-        )
+        .build(Root::builder().appender("trace").build(LevelFilter::Trace))
         .unwrap();
 
     let _handle = log4rs::init_config(config)?;
@@ -33,8 +28,8 @@ fn main() -> Result<(), SetLoggerError> {
     //     _sum += arr[i];
     //     trace!("sum: {:?} ", _sum);
     // }
-    let arr = vec!["a","b","c","a","b","c"];
-    let (res,map) = lib::reuse_interval(arr);
+    let arr = vec!["a", "b", "c", "a", "b", "c"];
+    let (res, map) = lib::reuse_interval(arr);
     println!("{:?}", res);
 
     Ok(())
