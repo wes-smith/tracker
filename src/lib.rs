@@ -21,6 +21,13 @@ pub fn reuse_interval(trace: Vec<&str>) -> (Vec<usize>, HashMap<usize, f32>) {
     let denom = calc.len();
     let mut freq_map = HashMap::new(); //value,frequency map
     for i in calc {
+
+        //Something like this may be better
+        // match freq_map.entry(&i){
+        //     Some(v) => freq_map.insert(&i, freq_map[&i] + 1),
+        //     None => freq_map.insert(&i, 1),
+        // }
+        
         if !freq_map.contains_key(&i) {
             freq_map.insert(i, 1);
         } else {
@@ -31,10 +38,10 @@ pub fn reuse_interval(trace: Vec<&str>) -> (Vec<usize>, HashMap<usize, f32>) {
     let mut dist_map = HashMap::new();
     for (k, v) in freq_map.iter() {
         let freq: f32 = *v as f32 / denom as f32;
-        dist_map.insert(k.clone(), freq);
+        dist_map.insert(*k, freq);
     }
 
-    return (res, dist_map);
+    (res, dist_map)
 }
 
 #[cfg(test)]

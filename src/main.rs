@@ -20,16 +20,17 @@ fn main() -> Result<(), SetLoggerError> {
         .unwrap();
 
     let _handle = log4rs::init_config(config)?;
-    // log4rs::init_config(config).unwrap();
 
-    // let arr = vec![0,1,2,3,4,5,6,7,8,9];
-    // let mut _sum = 0;
-    // for i in 0..10 {
-    //     _sum += arr[i];
-    //     trace!("sum: {:?} ", _sum);
-    // }
-    let arr = vec!["a", "b", "c", "a", "b", "c"];
-    let (res, map) = lib::reuse_interval(arr);
+    let arr = vec![0,1,2,3,4,5,6,7,8,9];
+    let mut _sum = 0;
+    for item in arr.iter() {
+        _sum += item;
+        trace!("sum: {:?} ", _sum);
+    }
+
+
+    let arr2 = vec!["a", "b", "c", "a", "b", "c"];
+    let (res, _map) = lib::reuse_interval(arr2);
     println!("{:?}", res);
 
     Ok(())

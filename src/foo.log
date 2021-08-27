@@ -7,4 +7,13 @@ sdum: 15
 sdum: 21 
 sdum: 28 
 sdum: 36 
-sdum: 45 
+sdum: 45 sum: 0 
+sum: 1 
+sum: 3 
+sum: 6 
+sum: 10 
+sum: 15 
+sum: 21 
+sum: 28 
+sum: 36 
+sum: 45 
