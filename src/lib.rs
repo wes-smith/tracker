@@ -10,9 +10,9 @@ pub fn reuse_interval(trace: Vec<&str>) -> HashMap<usize, f32> {
 
     let mut freq_map = HashMap::new(); //frequence map. k: reuse distance, v: frequence
     let mut dist_map = HashMap::new(); //distribution map. k: reuse distance, v: relative frequency
-                                       /*
-                                           End init data structures
-                                       */
+    /*
+        End init data structures
+    */
 
     /*
         (Real)Reuse distance distribution (rdd) calculation
