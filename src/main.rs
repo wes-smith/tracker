@@ -14,7 +14,7 @@ fn main() {
     // println!("{:?}", _res);
 
 
-    let mut arr = vec![8,7,6,5,3,2,1];
+    let mut arr = vec![8,7,6,5];
     quick_sort(&mut arr);
     println!("{:?}",arr);
 }
