@@ -92,7 +92,7 @@ fn calc_distance(window: Vec<&str>) -> usize{
     res
 }
 
-pub fn reuse_distance(trace: Vec<&str>)-> HashMap<usize, f32> {
+pub fn reuse_distance(trace: Vec<&str>)-> (HashMap<usize,usize>, HashMap<usize, f32>) {
      /*
         Init data structures
     */
@@ -164,13 +164,19 @@ pub fn reuse_distance(trace: Vec<&str>)-> HashMap<usize, f32> {
     /*
         Return the relative distribution
     */
-    dist_map
+    (freq_map,dist_map)
     /*
         End function
     */
 }
 
-
+pub fn dmd(dist: HashMap<usize,usize>) -> f32{
+    let mut res:f32 = 0.0;
+    for (k,v) in dist.iter(){
+        res += *v as f32 * (*k as f32).sqrt();
+    }
+    res
+}
 
 
 
@@ -207,6 +213,13 @@ mod tests {
         map.insert(5, 0.33333334);
 
         assert_eq!(dist, map);
+    }
+
+    #[test]
+    fn ri_sawtooth() {
+        let arr = vec!["a", "b", "c", "c", "b", "a"];
+        let (freq,_dist) = reuse_distance(arr);
+        assert!(True);
     }
 
     // #[test]
