@@ -1,6 +1,6 @@
 use nanorand::{Rng, WyRand};
 
-use log::{trace, LevelFilter, SetLoggerError};
+use log::{trace, LevelFilter};
 use log4rs::{
     append::{
         file::FileAppender,
@@ -28,76 +28,111 @@ pub fn quick_sort(arr: &mut Vec<i32>){
 
     let _handle = log4rs::init_config(config);
 
-    // for i in 0..10 {
-    //     trace!("{}", i.to_string());
-    // }
-
 
 
     let low = 0;
     let high = arr.len() as i32;
-    trace!("READ\tarr");
     quick_sort_helper(arr, low, high-1);
 }
 
 fn quick_sort_helper(arr: &mut Vec<i32>, low: i32, high: i32){
+    trace!("READ\tlow");
+    trace!("READ\thigh");
     if low < high{
-        trace!("READ\tlow");
-        trace!("READ\thigh");
-        let pivot = partition(arr,low,high);
+
         trace!("WRITE\tpivot");
+        let pivot = partition(arr,low,high);
+        
+        trace!("READ\tpivot");
+        trace!("READ\tarr");
+        trace!("READ\tlow");
         quick_sort_helper(arr, low, pivot-1);
+
+        trace!("READ\tpivot");
+        trace!("READ\tarr");
+        trace!("READ\tlow");
         quick_sort_helper(arr, pivot+1, high);
     }
 }
 
 fn partition(arr: &mut Vec<i32>, low: i32, high: i32) -> i32{
+
+    trace!("READ\thigh");
+    trace!("WRITE\tpivot");
     let pivot = high;//rng(low,high);
-    trace!("READ\thigh");
-    let mut index = low - 1;
+
     trace!("READ\tlow");
-    let mut last = high;
+    trace!("WRITE\tindex");
+    let mut index = low - 1;
+
     trace!("READ\thigh");
+    trace!("WRITE\tlast");
+    let mut last = high;
 
     loop {
-        index+=1;
+
         trace!("READ\tindex");
         trace!("WRITE\tindex");
+        index+=1;
+        
+        trace!("READ\tarr[{}]", index);
+        trace!("READ\tarr[{}]", pivot);
         while arr[index as usize] < arr[pivot as usize] {
-            trace!("READ\tarr[{}]", index);
-            trace!("READ\tarr[{}]", pivot);
-            index+=1;
+            
             trace!("READ\tindex");
             trace!("WRITE\tindex");
+            index+=1;
+
+            trace!("READ\tarr[{}]", index);
+            trace!("READ\tarr[{}]", pivot);
         }
-        last -= 1;
+
         trace!("READ\tlast");
         trace!("WRITE\tlast");
+        last -= 1;
+        
+        trace!("READ\tlast");
+        trace!("READ\tarr[{}]", last);
+        trace!("READ\tarr[{}]", pivot);
         while last >= 0 && arr[last as usize] > arr[pivot as usize]{
+            
+            trace!("READ\tindex");
+            trace!("WRITE\tindex");
+            last -= 1;
+            
             trace!("READ\tlast");
             trace!("READ\tarr[{}]", last);
             trace!("READ\tarr[{}]", pivot);
-            last -= 1;
-            trace!("READ\tindex");
-            trace!("WRITE\tindex");
         }
+
+        trace!("READ\tindex");
+        trace!("READ\tlast");
         if index >= last{
-            trace!("READ\tindex");
-            trace!("READ\tlast");
             break;
         }
+
         else{
-            arr.swap(index as usize, last as usize);
+            trace!("READ\tindex");
+            trace!("WRITE\tlast");
+            trace!("READ\tarr[{}]", index);
+            trace!("READ\tarr[{}]", last);
             trace!("WRITE\tarr[{}]", index);
             trace!("WRITE\tarr[{}]", last);
+            arr.swap(index as usize, last as usize);
         }
     }
-    arr.swap(index as usize, pivot as usize);
+
+    trace!("READ\tindex");
+    trace!("WRITE\tpivot");
+    trace!("READ\tarr[{}]", index);
+    trace!("READ\tarr[{}]", pivot);
     trace!("WRITE\tarr[{}]", index);
     trace!("WRITE\tarr[{}]", pivot);
+    arr.swap(index as usize, pivot as usize);
     index
 }
 
+#[allow(dead_code)]
 fn rng(low: i32, high: i32) -> i32{
     let mut rng = WyRand::new();
     rng.generate_range(low..=high)

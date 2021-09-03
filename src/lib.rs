@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+#[allow(dead_code)]
 pub fn reuse_interval(trace: Vec<&str>) -> HashMap<usize, f32> {
     /*
         Init data structures
@@ -76,7 +77,7 @@ pub fn reuse_interval(trace: Vec<&str>) -> HashMap<usize, f32> {
     */
 }
 
-
+#[allow(dead_code)]
 fn calc_distance(window: Vec<&str>) -> usize{
     let mut res: usize = 1;
     let mut last = window.first().unwrap();
@@ -91,7 +92,7 @@ fn calc_distance(window: Vec<&str>) -> usize{
     }
     res
 }
-
+#[allow(dead_code)]
 pub fn reuse_distance(trace: Vec<&str>)-> (HashMap<usize,usize>, HashMap<usize, f32>) {
      /*
         Init data structures
@@ -169,7 +170,7 @@ pub fn reuse_distance(trace: Vec<&str>)-> (HashMap<usize,usize>, HashMap<usize, 
         End function
     */
 }
-
+#[allow(dead_code)]
 pub fn dmd(dist: HashMap<usize,usize>) -> f32{
     let mut res:f32 = 0.0;
     for (k,v) in dist.iter(){
@@ -216,10 +217,10 @@ mod tests {
     }
 
     #[test]
-    fn ri_sawtooth() {
+    fn ri_sawtooth_distance_smoke() {
         let arr = vec!["a", "b", "c", "c", "b", "a"];
-        let (freq,_dist) = reuse_distance(arr);
-        assert!(True);
+        let (_freq,_dist) = reuse_distance(arr);
+        assert!(true);
     }
 
     // #[test]
