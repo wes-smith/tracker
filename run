@@ -1,0 +1,9 @@
+echo "Compiling..."
+cargo build
+cd /u/agoldfa7/research/tracker/target/release
+echo "Running..."
+for SIZE in 10 100 1000 10000 100000
+do 
+    ./tracker $SIZE $SIZE
+done
+echo "Done"
