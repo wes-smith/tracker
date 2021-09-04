@@ -10,8 +10,8 @@ use log4rs::{
 };
 
 
-pub fn quick_sort(arr: &mut Vec<i32>){
-    let file_path = "foo.log";
+pub fn quick_sort(arr: &mut Vec<i32>, file_path: &str){
+    let file_path = file_path;
 
     let logfile = FileAppender::builder().encoder(Box::new(PatternEncoder::new("{m}\n")))
         .build(file_path)
@@ -137,6 +137,24 @@ fn rng(low: i32, high: i32) -> i32{
     let mut rng = WyRand::new();
     rng.generate_range(low..=high)
 }
+
+pub fn init_arr(size: usize) -> Vec<i32> {
+    let mut arr = Vec::new();
+    let mut rng = nanorand::tls_rng();
+    
+    let low: i32 = -(size as i32)/2;
+    let high: i32 = size as i32 /2;
+    for _i in 0..size{
+        arr.push(rng.generate_range(low..=high));
+    }
+    arr
+}
+
+// pub fn shuffle(arr: &mut Vec<i32>) -> Vec<i32> {
+//     let mut rng = WyRand::new();
+//     rng.shuffle(&mut arr);
+//     arr.to_vec()
+// }
 
 #[cfg(test)]
 mod tests {

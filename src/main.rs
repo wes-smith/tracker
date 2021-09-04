@@ -3,14 +3,42 @@ mod instrumented_algorithms;
 mod parse;
 
 use instrumented_algorithms::quick_sort;
-// use csv::ReaderBuilder;
+use instrumented_algorithms::init_arr;
+// use instrumented_algorithms::shuffle;
+use std::env;
+use std::fs::File;
+use std::io::prelude::*;
 
-fn main() {
-    let trace: Vec<String> = parse::build_trace("foo.log").unwrap();
-    let trace_ref: Vec<&str> = trace.iter().map(AsRef::as_ref).collect();
+use nanorand::{Rng, WyRand};
 
-    let res = lib::dmd_from_trace(trace_ref);
-    println!("{}", res)
+fn main() -> std::io::Result<()>{
+    let args: Vec<String> = env::args().collect();
+    let size = args[1].parse::<usize>().unwrap();
+    let mut reps = args[2].parse::<usize>().unwrap();
+
+    let mut output = File::create("output.txt").unwrap();
+
+    let mut rng = WyRand::new();
+    let mut arr = init_arr(size);
+    let mut avg: f32 = 0.0;
+    let mut iteration = 1;
+    while reps > 1 {
+        quick_sort(&mut arr, "smoke");
+        rng.shuffle(&mut arr);
+        let trace: Vec<String> = parse::build_trace("foo.log").unwrap();
+        let trace_ref: Vec<&str> = trace.iter().map(AsRef::as_ref).collect();
+        let res = lib::dmd_from_trace(trace_ref);
+
+        avg = (avg+res)/iteration as f32;
+
+        iteration += 1;
+        reps -= 1;
+    }
+
+    write!(output, "arr_size: {}\nreps: {}\navg: {}\n", size, iteration, avg)?;
+
+    Ok(())
+    
 
     // let mut iter = parse::file_to_iter("foo.log").unwrap();
 
@@ -32,17 +60,3 @@ fn main() {
     // let mut arr = vec![8,7,6,5];
     // quick_sort(&mut arr);
 }
-
-// use csv::Reader;
-
-
-// #[derive(Debug, Deserialize)]
-// struct Record {
-//     access_type: String,
-//     id: String
-// }
-
-// fn test()-> std::io::Result<()> {
-
-    
-// }
