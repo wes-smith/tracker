@@ -1,13 +1,22 @@
 mod lib;
 mod instrumented_algorithms;
+mod parse;
 
 use instrumented_algorithms::quick_sort;
-use csv;
-use std::error::Error;
-use std::io;
+// use csv::ReaderBuilder;
 
 fn main() {
+    let trace: Vec<String> = parse::build_trace("foo.log").unwrap();
+    let trace_ref: Vec<&str> = trace.iter().map(AsRef::as_ref).collect();
 
+    let res = lib::dmd_from_trace(trace_ref);
+    println!("{}", res)
+
+    // let mut iter = parse::file_to_iter("foo.log").unwrap();
+
+    // while let Some(record) = iter.next() {
+    //     println!("{:?}", record);
+    // }
 
     // let arr = vec!["a", "b", "c", "a", "b", "c"];
     // let arr = vec![
@@ -20,19 +29,20 @@ fn main() {
     // println!("{}", res);
 
 
-    let mut arr = vec![8,7,6,5];
-    quick_sort(&mut arr);
-    
-    let _res = test();
+    // let mut arr = vec![8,7,6,5];
+    // quick_sort(&mut arr);
 }
 
-fn test() -> Result<(), Box<dyn Error>> {
-    
+// use csv::Reader;
 
-    let mut rdr = csv::Reader::from_reader(file.as_bytes());
-    for result in rdr.deserialize(){
-        let record = result?;
-        println!("{:?}", record);
-    }
-    Ok(())
-}
+
+// #[derive(Debug, Deserialize)]
+// struct Record {
+//     access_type: String,
+//     id: String
+// }
+
+// fn test()-> std::io::Result<()> {
+
+    
+// }
