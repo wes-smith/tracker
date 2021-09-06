@@ -30,11 +30,12 @@ fn main() -> std::io::Result<()>{
         let trace_ref: Vec<&str> = trace.iter().map(AsRef::as_ref).collect();
         let res = lib::dmd_from_trace(trace_ref);
 
-        avg = (avg+res)/iteration as f32;
+        avg += res;
 
         iteration += 1;
         reps -= 1;
     }
+    avg /= iteration as f32;
 
     write!(output, "arr_size: {}\nreps: {}\navg: {}\n", size, iteration, avg)?;
 

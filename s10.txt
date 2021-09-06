@@ -1,3 +1,0 @@
-arr_size: 10
-reps: 10
-avg: 1526.69

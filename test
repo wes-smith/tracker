@@ -1,0 +1,8 @@
+rm *.txt
+rm *.log
+echo "Compiling..."
+cargo build
+echo "Running..."
+cargo run 100 100
+echo "Done"
+cat s10.txt
