@@ -12,7 +12,7 @@ def graph(x,y):
 	plt.title("Data movement distance (DMD) of Quicksort")
 	plt.xlabel("Array size")
 	plt.ylabel("DMD")
-	plt.yscale("log")
+	#plt.yscale("log")
 
 	# for i, txt in enumerate(labels):
 	# 	plt.annotate(txt, (x[i], y[i]))

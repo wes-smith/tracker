@@ -11,9 +11,9 @@ pub fn reuse_interval(trace: Vec<&str>) -> HashMap<usize, f32> {
 
     let mut freq_map = HashMap::new(); //frequence map. k: reuse interval, v: frequence
     let mut dist_map = HashMap::new(); //distribution map. k: reuse interval, v: relative frequency
-    /*
-        End init data structures
-    */
+                                       /*
+                                           End init data structures
+                                       */
 
     /*
         (Real)Reuse interval distribution (rdd) calculation
@@ -78,23 +78,22 @@ pub fn reuse_interval(trace: Vec<&str>) -> HashMap<usize, f32> {
 }
 
 #[allow(dead_code)]
-fn calc_distance(window: Vec<&str>) -> usize{
+fn calc_distance(window: Vec<&str>) -> usize {
     let mut res: usize = 1;
     let mut last = window.first().unwrap();
-    for val in window.iter(){
-        if val == last{
+    for val in window.iter() {
+        if val == last {
             continue;
-        }
-        else{
-            res = res + 1;
+        } else {
+            res += 1;
             last = val;
         }
     }
     res
 }
 #[allow(dead_code)]
-pub fn reuse_distance(trace: Vec<&str>)-> (HashMap<usize,usize>, HashMap<usize, f32>) {
-     /*
+pub fn reuse_distance(trace: Vec<&str>) -> (HashMap<usize, usize>, HashMap<usize, f32>) {
+    /*
         Init data structures
     */
     let mut im = HashMap::new(); // index map. k: trace element(address), v: last index element was read
@@ -165,26 +164,24 @@ pub fn reuse_distance(trace: Vec<&str>)-> (HashMap<usize,usize>, HashMap<usize, 
     /*
         Return the relative distribution
     */
-    (freq_map,dist_map)
+    (freq_map, dist_map)
     /*
         End function
     */
 }
 #[allow(dead_code)]
-pub fn dmd(dist: HashMap<usize,usize>) -> f32{
-    let mut res:f32 = 0.0;
-    for (k,v) in dist.iter(){
+pub fn dmd(dist: HashMap<usize, usize>) -> f32 {
+    let mut res: f32 = 0.0;
+    for (k, v) in dist.iter() {
         res += *v as f32 * (*k as f32).sqrt();
     }
     res
 }
 
 pub fn dmd_from_trace(trace: Vec<&str>) -> f32 {
-    let (freq_map,_hash_map) = reuse_distance(trace);
+    let (freq_map, _hash_map) = reuse_distance(trace);
     dmd(freq_map)
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -223,7 +220,7 @@ mod tests {
     #[test]
     fn ri_sawtooth_distance_smoke() {
         let arr = vec!["a", "b", "c", "c", "b", "a"];
-        let (_freq,_dist) = reuse_distance(arr);
+        let (_freq, _dist) = reuse_distance(arr);
         assert!(true);
     }
 
