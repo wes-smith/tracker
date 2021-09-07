@@ -169,6 +169,25 @@ pub fn reuse_distance(trace: Vec<&str>) -> (HashMap<usize, usize>, HashMap<usize
         End function
     */
 }
+
+
+
+pub fn reuse_distance_eff(trace: Vec<&str>){ //-> (HashMap<usize, usize>, HashMap<usize, f32>) {
+    let mut stack = Vec::new();
+
+    // a b c a b c a b a
+    for val in trace.iter(){
+        if stack.contains(&val){ //resuse
+            let position = stack.iter().position(|&x| x == val).unwrap();
+            println!("{}", position);
+        }
+        else{
+            stack.push(val);
+        }
+    }
+}
+
+
 #[allow(dead_code)]
 pub fn dmd(dist: HashMap<usize, usize>) -> f32 {
     let mut res: f32 = 0.0;
@@ -194,9 +213,9 @@ mod tests {
     }
 
     #[test]
-    fn ri_cyclic() {
+    fn rd_cyclic() {
         let arr = vec!["a", "b", "c", "a", "b", "c"];
-        let dist = reuse_interval(arr);
+        let dist = reuse_distance_eff(arr);
 
         let mut map = HashMap::new();
         map.insert(3, 1.0);
@@ -204,25 +223,36 @@ mod tests {
         assert_eq!(dist, map);
     }
 
-    #[test]
-    fn ri_sawtooth() {
-        let arr = vec!["a", "b", "c", "c", "b", "a"];
-        let dist = reuse_interval(arr);
+    // #[test]
+    // fn ri_cyclic() {
+    //     let arr = vec!["a", "b", "c", "a", "b", "c"];
+    //     let dist = reuse_interval(arr);
 
-        let mut map = HashMap::new();
-        map.insert(1, 0.33333334);
-        map.insert(3, 0.33333334);
-        map.insert(5, 0.33333334);
+    //     let mut map = HashMap::new();
+    //     map.insert(3, 1.0);
 
-        assert_eq!(dist, map);
-    }
+    //     assert_eq!(dist, map);
+    // }
 
-    #[test]
-    fn ri_sawtooth_distance_smoke() {
-        let arr = vec!["a", "b", "c", "c", "b", "a"];
-        let (_freq, _dist) = reuse_distance(arr);
-        assert!(true);
-    }
+    // #[test]
+    // fn ri_sawtooth() {
+    //     let arr = vec!["a", "b", "c", "c", "b", "a"];
+    //     let dist = reuse_interval(arr);
+
+    //     let mut map = HashMap::new();
+    //     map.insert(1, 0.33333334);
+    //     map.insert(3, 0.33333334);
+    //     map.insert(5, 0.33333334);
+
+    //     assert_eq!(dist, map);
+    // }
+
+    // #[test]
+    // fn ri_sawtooth_distance_smoke() {
+    //     let arr = vec!["a", "b", "c", "c", "b", "a"];
+    //     let (_freq, _dist) = reuse_distance(arr);
+    //     assert!(true);
+    // }
 
     // #[test]
     // fn insert_sort() {
