@@ -13,8 +13,10 @@ use nanorand::{Rng, WyRand};
 
 fn main() -> std::io::Result<()> {
 
-    let arr = vec!["a", "b", "c", "a", "b", "c"];
-    lib::reuse_distance_eff(arr);
+    // let arr = vec!["a", "b", "c", "a", "b", "c"];
+    let arr = vec!["a", "b", "c", "c", "b", "a"];
+    let _map = lib::reuse_distance_eff(arr);
+    println!("{:?}", _map);
 
     // let args: Vec<String> = env::args().collect();
     // let size = args[1].parse::<usize>().unwrap();

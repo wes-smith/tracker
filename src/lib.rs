@@ -172,21 +172,34 @@ pub fn reuse_distance(trace: Vec<&str>) -> (HashMap<usize, usize>, HashMap<usize
 
 
 
-pub fn reuse_distance_eff(trace: Vec<&str>){ //-> (HashMap<usize, usize>, HashMap<usize, f32>) {
+pub fn reuse_distance_eff(trace: Vec<&str>) -> HashMap<usize, usize> {//-> (HashMap<usize, usize>, HashMap<usize, f32>) {
     let mut stack = Vec::new();
+    let mut freq_map: HashMap<usize,usize> = HashMap::new();
 
     // a b c a b c a b a
     for val in trace.iter(){
+        // println!("{:?}", stack);
         if stack.contains(&val){ //resuse
-            let position = stack.iter().position(|&x| x == val).unwrap() + 1;
-
-            
-            println!("{}", position);
+            let position = stack.iter().position(|&x| x == val).unwrap();  //get position in stack
+            if position == stack.len()-1{ //top of stack
+                let freq = freq_map.entry(1).or_insert(0);
+                *freq += 1;
+            }
+            else{
+                let item = stack.remove(position);    //remove element and place at top
+                stack.push(item);
+                let temp_dist = stack.len()-position;
+                
+                let freq = freq_map.entry(temp_dist).or_insert(0);
+                *freq += 1;
+            }
         }
         else{
             stack.push(val);
+            // freq_map.insert(temp_dist, 0);
         }
     }
+    freq_map
 }
 
 
