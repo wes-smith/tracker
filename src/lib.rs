@@ -178,7 +178,9 @@ pub fn reuse_distance_eff(trace: Vec<&str>){ //-> (HashMap<usize, usize>, HashMa
     // a b c a b c a b a
     for val in trace.iter(){
         if stack.contains(&val){ //resuse
-            let position = stack.iter().position(|&x| x == val).unwrap();
+            let position = stack.iter().position(|&x| x == val).unwrap() + 1;
+
+            
             println!("{}", position);
         }
         else{
