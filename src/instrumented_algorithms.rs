@@ -71,6 +71,8 @@ fn partition(arr: &mut Vec<i32>, low: i32, high: i32) -> i32 {
             trace!("WRITE\tindex");
             index += 1;
 
+            trace!("READ\tindex");
+            trace!("READ\tpivot");
             trace!("READ\tarr[{}]", index);
             trace!("READ\tarr[{}]", pivot);
         }
@@ -88,6 +90,7 @@ fn partition(arr: &mut Vec<i32>, low: i32, high: i32) -> i32 {
             last -= 1;
 
             trace!("READ\tlast");
+            trace!("READ\tpivot");
             trace!("READ\tarr[{}]", last);
             trace!("READ\tarr[{}]", pivot);
         }
@@ -141,22 +144,22 @@ pub fn init_arr(size: usize) -> Vec<i32> {
 //     arr.to_vec()
 // }
 
-#[cfg(test)]
-mod tests {
+// #[cfg(test)]
+// mod tests {
 
-    use super::*;
+//     use super::*;
 
-    #[test]
-    fn smoke() {
-        assert!(1 == 1);
-    }
+//     #[test]
+//     fn smoke() {
+//         assert!(1 == 1);
+//     }
 
-    #[test]
-    fn sort() {
-        let mut arr = vec![8, 7, 6, 5, 3, 2, 1];
-        let mut arr2 = arr.clone();
-        arr2.sort();
-        quick_sort(&mut arr);
-        assert_eq!(arr, arr2);
-    }
-}
+//     #[test]
+//     fn sort() {
+//         let mut arr = vec![8, 7, 6, 5, 3, 2, 1];
+//         let mut arr2 = arr.clone();
+//         arr2.sort();
+//         quick_sort(&mut arr);
+//         assert_eq!(arr, arr2);
+//     }
+// }
