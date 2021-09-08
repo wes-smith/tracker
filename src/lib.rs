@@ -233,7 +233,7 @@ mod tests {
         let dist = reuse_distance_eff(arr);
 
         let mut map = HashMap::new();
-        map.insert(3, 1.0);
+        map.insert(3, 3);
 
         assert_eq!(dist, map);
     }
@@ -249,18 +249,18 @@ mod tests {
     //     assert_eq!(dist, map);
     // }
 
-    // #[test]
-    // fn ri_sawtooth() {
-    //     let arr = vec!["a", "b", "c", "c", "b", "a"];
-    //     let dist = reuse_interval(arr);
+    #[test]
+    fn rd_sawtooth() {
+        let arr = vec!["a", "b", "c", "c", "b", "a"];
+        let dist = reuse_distance_eff(arr);
 
-    //     let mut map = HashMap::new();
-    //     map.insert(1, 0.33333334);
-    //     map.insert(3, 0.33333334);
-    //     map.insert(5, 0.33333334);
+        let mut map = HashMap::new();
+        map.insert(1 as usize, 1);
+        map.insert(2 as usize, 1);
+        map.insert(3 as usize, 1);
 
-    //     assert_eq!(dist, map);
-    // }
+        assert_eq!(dist, map);
+    }
 
     // #[test]
     // fn ri_sawtooth_distance_smoke() {
