@@ -20,37 +20,37 @@ fn main() -> std::io::Result<()> {
     let size = args[1].parse::<usize>().unwrap();
     let mut reps = args[2].parse::<usize>().unwrap();
 
-    // let file_name = String::from("s".to_string() + &args[1] + &".txt".to_string());
-    // let mut output = File::create(file_name).unwrap();
+    let file_name = String::from("s".to_string() + &args[1] + &".txt".to_string());
+    let mut output = File::create(file_name).unwrap();
 
     let mut rng = WyRand::new();
     let mut arr = init_arr(size);
-    // let mut avg: f32 = 0.0;
-    // let mut iteration = 1;
+    let mut avg: f32 = 0.0;
+    let mut iteration = 1;
 
-    // while reps > 1 {
-    //     quick_sort(&mut arr, "foo.log");
-    //     rng.shuffle(&mut arr);
-    //     let trace: Vec<String> = parse::build_trace("foo.log").unwrap();
-    //     let trace_ref: Vec<&str> = trace.iter().map(AsRef::as_ref).collect();
-    //     let res = lib::dmd_from_trace(trace_ref);
+    while reps > 1 {
+        let data: Data = quick_sort_rt(&mut arr);
+        rng.shuffle(&mut arr);
+        // let trace: Vec<String> = parse::build_trace("foo.log").unwrap();
+        // let trace_ref: Vec<&str> = trace.iter().map(AsRef::as_ref).collect();
+        let res = *data.dmd;
 
-    //     avg += res;
+        avg += res;
 
-    //     iteration += 1;
-    //     reps -= 1;
-    // }
-    // avg /= iteration as f32;
+        iteration += 1;
+        reps -= 1;
+    }
+    avg /= iteration as f32;
 
-    rng.shuffle(&mut arr);
-    let data = quick_sort_rt(&mut arr);
-    println!("{}", data.dmd);
+    // rng.shuffle(&mut arr);
+    // let data = quick_sort_rt(&mut arr);
+    // println!("{}", data.dmd);
 
-    // write!(
-    //     output,
-    //     "arr_size: {}\nreps: {}\navg: {}\n",
-    //     size, iteration, avg
-    // )?;
+    write!(
+        output,
+        "arr_size: {}\nreps: {}\navg: {}\n",
+        size, iteration, avg
+    )?;
 
     Ok(())
 }

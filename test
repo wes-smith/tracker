@@ -5,4 +5,4 @@ cargo build
 echo "Running..."
 cargo run 100 100
 echo "Done"
-cat s10.txt
+cat s100.txt
