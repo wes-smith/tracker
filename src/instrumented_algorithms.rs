@@ -10,6 +10,76 @@ use crate::rttrace::Data;
 use crate::rttrace::{init,trace};
 
 
+pub fn matrix_multiply(A: &Vec<Vec<usize>>, B: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
+    let rowA = A.len();
+    let colA = A[0].len();
+    let rowB = B.len();
+    let colB = B[0].len();
+    return mat_mult_helper(rowA, colA, A, rowB, colB, B);
+}
+
+fn mat_mult_helper(rowA: usize, colA: usize, A: &Vec<Vec<usize>>, rowB: usize, colB: usize, B: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
+    if rowB != colA {
+        println!("Misshaped matrices");
+        return A.to_vec();
+    }
+    let mut C: Vec<Vec<usize>> = vec![vec![0; rowA]; colB];
+
+    let mut i = 0;
+    let mut j = 0;
+    let mut k = 0;
+    mat_mult_rec(rowA,colA,A,rowB,colB,B,&mut C,&mut i,&mut j,&mut k);
+    return C;
+}
+
+fn mat_mult_rec(rowA: usize, colA: usize, A: &Vec<Vec<usize>>, rowB: usize, colB: usize, B: &Vec<Vec<usize>>, C: &mut Vec<Vec<usize>>, i: &mut usize, j: &mut usize, k: &mut usize){
+    trace!("Read\ti");
+    trace!("Read\trowA");
+    if *i >= rowA{
+
+        return;
+    }
+    trace!("Read\tj");
+    trace!("Read\tcolB");
+    if *j < colB {
+
+        trace!("Read\tk");
+        trace!("Read\tcolA");
+        if *k < colA {
+
+            trace!("Read\ti");
+            trace!("Read\tk");
+            trace!("Read\tA[{}][{}]", i, k);
+            trace!("Read\tk");
+            trace!("Read\tj");
+            trace!("Read\tB[{}][{}]", k, j);
+            trace!("Read\tC[{}][{}]", i, j);
+            trace!("Write\tC[{}][{}]", i, j);
+            C[*i][*j] += A[*i][*k] * B[*k][*j];
+
+            trace!("Read\tk");
+            trace!("Write\tk");
+            *k+=1;
+
+            mat_mult_rec(rowA, colA, A, rowB, colB, B, C, i, j, k);
+        }
+        trace!("Read\tk");
+        *k = 0;
+        trace!("Read\tj");
+        trace!("Write\th");
+        *j += 1;
+        mat_mult_rec(rowA, colA, A, rowB, colB, B, C, i, j, k);
+    }
+    trace!("Read\tj");
+    *j = 0;
+
+    trace!("Read\ti");
+    trace!("Write\ti");
+    *i += 1;
+
+    mat_mult_rec(rowA, colA, A, rowB, colB, B, C, i, j, k);
+}
+
 pub fn quick_sort_rt(arr: &mut Vec<i32>) -> Data {
     let mut data = init();
 
