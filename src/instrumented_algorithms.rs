@@ -9,8 +9,24 @@
 // use crate::rttrace::Data;
 // use crate::rttrace::{init,trace};
 
-/*Assuming square matrix & dim is a power of 2  */
-pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>>{
+// pub fn corners_raw(A: &mut Vec<Vec<usize>>) -> (Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>){
+//     //println!("{:?}\n", A);
+//     let len = A.len();
+//     let ptr = A.as_mut_ptr();
+//     let mid = len/2;
+//     let cap = A.capacity();
+
+//     unsafe {
+//             let tl_ptr = Box::new(&Vec::from_raw_parts(ptr, mid, cap));
+//             let tr_ptr = Box::new(&Vec::from_raw_parts(ptr, mid, cap));
+//             let bl_ptr = Box::new(&Vec::from_raw_parts(ptr.offset(mid as isize), mid, cap));
+//             let br_ptr = Box::new(&Vec::from_raw_parts(ptr.offset(mid as isize), mid, cap));
+//             //return (tl_ptr,tr_ptr,bl_ptr,br_ptr);
+//     }
+// }
+
+
+pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>> {
     let n = A.len();
     if n == 1 {
         return vec![vec![A[0][0] * B[0][0]]]; 
@@ -18,19 +34,50 @@ pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<
 
     let mut C = vec![vec![0 as usize; n]; n];
 
-    let (mut a11,mut a12,mut a21,mut a22) = corners(&A);
+    let len = A.len();
+    let ptr = A.as_mut_ptr();
+    let mid = len/2;
+    let cap = A.capacity();
 
-    let (mut b11,mut b12,mut b21,mut b22) = corners(&B);
-    
-    let (mut c11,mut c12,mut c21,mut c22) = corners(&C);
+    unsafe {
+        let tl_ptr: &Vec<Vec<usize>> = &Vec::from_raw_parts(ptr, mid, cap);
+        let tr_ptr: &Vec<Vec<usize>> = &Vec::from_raw_parts(ptr, mid, cap);
+        let bl_ptr: &Vec<Vec<usize>> = &Vec::from_raw_parts(ptr.offset(mid as isize), mid, cap);
+        let br_ptr: &Vec<Vec<usize>> = &Vec::from_raw_parts(ptr.offset(mid as isize), mid, cap);
 
-    c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
-    c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
-    c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
-    c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
-    C = stitch(&c11,&c12,&c21,&c22);
+        println!("{:?}", tl_ptr);
+    }
+
+    // c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
+    // c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
+    // c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
+    // c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
+    // C = stitch(&c11,&c12,&c21,&c22);
     C
 }
+
+/*Assuming square matrix & dim is a power of 2  */
+// pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>>{
+//     let n = A.len();
+//     if n == 1 {
+//         return vec![vec![A[0][0] * B[0][0]]]; 
+//     }
+
+//     let mut C = vec![vec![0 as usize; n]; n];
+
+//     let (mut a11,mut a12,mut a21,mut a22) = corners(&A);
+
+//     let (mut b11,mut b12,mut b21,mut b22) = corners(&B);
+    
+//     let (mut c11,mut c12,mut c21,mut c22) = corners(&C);
+
+//     c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
+//     c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
+//     c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
+//     c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
+//     C = stitch(&c11,&c12,&c21,&c22);
+//     C
+// }
 
 fn matrix_add(A: &Vec<Vec<usize>>, B: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let n = A.len();
