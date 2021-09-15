@@ -47,7 +47,7 @@ use log4rs::{
 //         let bottom_ptr = bottom_ptr.as_mut_ptr();
        
 //         let tl: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(top_ptr, mid).to_vec();
-//         let tr: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(top_ptr.offset(mid as isize), mid).to_vec();
+//         let tr: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(top_ptr.offset(mid as isize), mid).to_vec(); //seg faults due to offset
 //         //println!("here");
 //         let bl: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(bottom_ptr, mid).to_vec();
 //         let br: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(bottom_ptr.offset(mid as isize), mid).to_vec();
