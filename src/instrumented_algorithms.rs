@@ -1,11 +1,11 @@
 // use nanorand::{Rng, WyRand};
 
-// use log::{trace, LevelFilter};
-// use log4rs::{
-//     append::file::FileAppender,
-//     config::{Appender, Config, Root},
-//     encode::pattern::PatternEncoder,
-// };
+use log::{trace, LevelFilter};
+use log4rs::{
+    append::file::FileAppender,
+    config::{Appender, Config, Root},
+    encode::pattern::PatternEncoder,
+};
 // use crate::rttrace::Data;
 // use crate::rttrace::{init,trace};
 
@@ -27,7 +27,7 @@
 // use std::slice;
 
 
-// pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>> {
+// pub fn matrix_multiply_raw(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>> {
 //     let n = A.len();
 //     if n == 1 {
 //         return vec![vec![A[0][0] * B[0][0]]]; 
@@ -68,15 +68,17 @@
 pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let n = A.len();
     if n == 1 {
+        trace!("read\tA[0][0]");
+        trace!("read\tB[0][0]");
+        println!("read\tA[0][0]");
+        println!("read\tB[0][0]");
         return vec![vec![A[0][0] * B[0][0]]]; 
     }
 
     let mut C = vec![vec![0 as usize; n]; n];
 
-    let (mut a11,mut a12,mut a21,mut a22) = corners(&A);
-
+    let (mut a11,mut a12,mut a21,mut a22) = corners(&A); //deal with temp memory
     let (mut b11,mut b12,mut b21,mut b22) = corners(&B);
-    
     let (mut c11,mut c12,mut c21,mut c22) = corners(&C);
 
     c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
