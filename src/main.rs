@@ -4,7 +4,7 @@ mod instrumented_algorithms;
 // mod rttrace;
 
 // use instrumented_algorithms::init_arr;
-use instrumented_algorithms::{matrix_multiply};
+use instrumented_algorithms::{matrix_multiply,corners,stitch};
 
 // use crate::rttrace::Data;
 // use crate::rttrace::{init,trace};
@@ -38,6 +38,13 @@ fn main() -> std::io::Result<()> {
     let C = matrix_multiply(&mut A,&mut B);
 
     println!("{:?}", C);
+
+
+
+
+
+
+
     // let args: Vec<String> = env::args().collect();
     // let size = args[1].parse::<usize>().unwrap();
     // let mut reps = args[2].parse::<usize>().unwrap();

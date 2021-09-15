@@ -12,6 +12,10 @@
 /*Assuming square matrix & dim is a power of 2  */
 pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let n = A.len();
+    if n == 1 {
+        return vec![vec![A[0][0] * B[0][0]]]; 
+    }
+
     let mut C = vec![vec![0 as usize; n]; n];
 
     let (mut a11,mut a12,mut a21,mut a22) = corners(&A);
@@ -19,15 +23,12 @@ pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<
     let (mut b11,mut b12,mut b21,mut b22) = corners(&B);
     
     let (mut c11,mut c12,mut c21,mut c22) = corners(&C);
-    if n == 1 {
-        c11[0][0] = a11[0][0] * b11[0][0]; 
-    }
-    else{
-        c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
-        c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
-        c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
-        c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
-    }
+
+    c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
+    c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
+    c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
+    c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
+    C = stitch(&c11,&c12,&c21,&c22);
     C
 }
 
@@ -43,7 +44,35 @@ fn matrix_add(A: &Vec<Vec<usize>>, B: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     C
 }
 
-fn corners(A: &Vec<Vec<usize>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
+pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, br: &Vec<Vec<usize>>) -> Vec<Vec<usize>> {
+    let n = tl.len();
+    let mut C = Vec::new();
+
+    for i in 0..(2*n) {
+        let mut row = Vec::new();
+        for j in 0..(2*n) {
+            if i <= n/2 && j <= n/2{ //tl
+                row.push(tl[i/2][j/2]);
+            }
+            else if i <= n/2 && j >= n/2{ //tr
+                row.push(tr[i/2][j/2]);
+            }
+            else if i >= n/2 && j <= n/2{ //bl
+                row.push(bl[i/2][j/2]);
+            }
+            else if i >= n/2 && j >= n/2{ //br
+                row.push(br[i/2][j/2]);
+            }
+            else{
+                break; //unreachable
+            }
+        }
+        C.push(row);
+    }
+    C
+}
+
+pub fn corners(A: &Vec<Vec<usize>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
     //println!("{:?}\n", A);
     let n = A.len();
 
@@ -191,32 +220,6 @@ fn corners(A: &Vec<Vec<usize>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<us
 // }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // pub fn quick_sort(arr: &mut Vec<i32>, file_path: &str) {
 //     let file_path = file_path;
 
@@ -354,22 +357,25 @@ fn corners(A: &Vec<Vec<usize>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<us
 //     arr.to_vec()
 // }
 
-// #[cfg(test)]
-// mod tests {
+#[cfg(test)]
+mod tests {
 
-//     use super::*;
+    use super::*;
 
-//     #[test]
-//     fn smoke() {
-//         assert!(1 == 1);
-//     }
+    #[test]
+    fn smoke() {
+        assert!(1 == 1);
+    }
 
-//     #[test]
-//     fn sort() {
-//         let mut arr = vec![8, 7, 6, 5, 3, 2, 1];
-//         let mut arr2 = arr.clone();
-//         arr2.sort();
-//         quick_sort(&mut arr);
-//         assert_eq!(arr, arr2);
-//     }
-// }
+    #[test]
+    fn stitch_corners() {
+        let mut A = Vec::new();
+        A.push(vec![1,2]);
+        A.push(vec![3,4]);
+
+        let (tl,tr,bl,br) = corners(&A);
+        let B = stitch(&tl,&tr,&bl,&br);
+
+        assert_eq!(A, B);
+    }
+}
