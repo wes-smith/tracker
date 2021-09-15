@@ -14,28 +14,19 @@ pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<
     let n = A.len();
     let mut C = vec![vec![0 as usize; n]; n];
 
-    let mut a11 = &mut A[0..n/2][0..n/2].to_owned();
-    let mut a12 = &mut A[0..n/2][n/2..n].to_owned();
-    let mut a21 = &mut A[n/2..n][0..n/2].to_owned();
-    let mut a22 = &mut A[n/2..n][n/2..n].to_owned();
+    let (mut a11,mut a12,mut a21,mut a22) = corners(&A);
 
-    let mut b11 = &mut B[0..n/2][0..n/2].to_owned();
-    let mut b12 = &mut B[0..n/2][n/2..n].to_owned();
-    let mut b21 = &mut B[n/2..n][0..n/2].to_owned();
-    let mut b22 = &mut B[n/2..n][n/2..n].to_owned();
-
-    let mut c11 = &mut C[0..n/2][0..n/2].to_owned();
-    let mut c12 = &mut C[0..n/2][n/2..n].to_owned();
-    let mut c21 = &mut C[n/2..n][0..n/2].to_owned();
-    let mut c22 = &mut C[n/2..n][n/2..n].to_owned();
+    let (mut b11,mut b12,mut b21,mut b22) = corners(&B);
+    
+    let (mut c11,mut c12,mut c21,mut c22) = corners(&C);
     if n == 1 {
         c11[0][0] = a11[0][0] * b11[0][0]; 
     }
     else{
-        c11 = &mut matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
-        c12 = &mut matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
-        c21 = &mut matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
-        c22 = &mut matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
+        c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
+        c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
+        c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
+        c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
     }
     C
 }
@@ -50,6 +41,50 @@ fn matrix_add(A: &Vec<Vec<usize>>, B: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
         }
     }
     C
+}
+
+fn corners(A: &Vec<Vec<usize>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
+    //println!("{:?}\n", A);
+    let n = A.len();
+
+    let mut tl: Vec<Vec<usize>> = Vec::new();
+    let mut tr: Vec<Vec<usize>> = Vec::new();
+    let mut bl: Vec<Vec<usize>> = Vec::new();
+    let mut br: Vec<Vec<usize>> = Vec::new();
+
+    if n == 1 {
+        tl.push(vec![A[0][0]]);
+        return (tl,tr,bl,br);
+    }
+
+    for i in (0..n){
+        let mut left: Vec<usize> = Vec::new();
+        let mut right: Vec<usize> = Vec::new();
+        for j in (0..n){
+            if i < n/2 && j < n/2{ //tl
+                left.push(A[i][j]);
+            }
+            else if i < n/2 && j > n/2{ //tr
+                right.push(A[i][j]);
+            }
+            else if i > n/2-1 && j < n/2{ //bl
+                left.push(A[i][j]);
+            }
+            else{ //br
+                right.push(A[i][j]);
+            }
+        }
+        if i < n/2 {
+            tl.push(left);
+            tr.push(right);
+        }
+        else{
+            bl.push(left);
+            br.push(right);
+        }
+    }
+
+    return (tl,tr,bl,br);
 }
 
 // pub fn quick_sort_rt(arr: &mut Vec<i32>) -> Data {

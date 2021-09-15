@@ -15,42 +15,7 @@ use instrumented_algorithms::{matrix_multiply};
 
 // use nanorand::{Rng, WyRand};
 
-fn corners(A: &Vec<Vec<usize>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
-    let n = A.len();
-    let mut tl: Vec<Vec<usize>> = Vec::new();
-    let mut tr: Vec<Vec<usize>> = Vec::new();
-    let mut bl: Vec<Vec<usize>> = Vec::new();
-    let mut br: Vec<Vec<usize>> = Vec::new();
 
-    for i in (0..n){
-        let mut left: Vec<usize> = Vec::new();
-        let mut right: Vec<usize> = Vec::new();
-        for j in (0..n){
-            if i < n/2 && j < n/2{ //tl
-                left.push(A[i][j]);
-            }
-            else if i < n/2 && j > n/2{ //tr
-                right.push(A[i][j]);
-            }
-            else if i > n/2-1 && j < n/2{ //bl
-                left.push(A[i][j]);
-            }
-            else{ //br
-                right.push(A[i][j]);
-            }
-        }
-        if i < n/2 {
-            tl.push(left);
-            tr.push(right);
-        }
-        else{
-            bl.push(left);
-            br.push(right);
-        }
-    }
-
-    return (tl,tr,bl,br);
-}
 
 fn main() -> std::io::Result<()> {
     let mut A = Vec::new();
@@ -70,12 +35,9 @@ fn main() -> std::io::Result<()> {
     // B.push(vec![1,2,3,4]);
     // B.push(vec![5,6,7,8]);
 
-    let (tl,tr,bl,br) = corners(&A);
-    println!{"tl: {:?} \ntr: {:?} \nbl: {:?} \nbr: {:?}", tl, tr, bl, br};
+    let C = matrix_multiply(&mut A,&mut B);
 
-    // let C = matrix_multiply(&mut A,&mut B);
-
-    // println!("{:?}", C);
+    println!("{:?}", C);
     // let args: Vec<String> = env::args().collect();
     // let size = args[1].parse::<usize>().unwrap();
     // let mut reps = args[2].parse::<usize>().unwrap();
