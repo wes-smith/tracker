@@ -24,7 +24,7 @@ use log4rs::{
 //             //return (tl_ptr,tr_ptr,bl_ptr,br_ptr);
 //     }
 // }
-// use std::slice;
+use std::slice;
 
 
 // pub fn matrix_multiply_raw(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>> {
@@ -45,20 +45,21 @@ use log4rs::{
 //         let mut bottom_ptr: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(ptr.offset(mid as isize), mid).to_vec();
 //         let top_ptr = top_ptr.as_mut_ptr();
 //         let bottom_ptr = bottom_ptr.as_mut_ptr();
+
        
-//         let tl: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(top_ptr, mid).to_vec();
-//         let tr: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(top_ptr.offset(mid as isize), mid).to_vec(); //seg faults due to offset
-//         //println!("here");
-//         let bl: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(bottom_ptr, mid).to_vec();
-//         let br: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(bottom_ptr.offset(mid as isize), mid).to_vec();
-//         println!("{:?}\n\n{:?}\n{:?}\n{:?}\n{:?}\n", A,tl,tr,bl,br);
+//         let tl = &mut slice::from_raw_parts_mut(top_ptr, mid);
+//         println!("tl: {:?}", tl);
+//         // let tr: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(top_ptr.offset(mid as isize), mid).to_vec(); //seg faults due to offset
+//         // let bl: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(bottom_ptr, mid).to_vec();
+//         // let br: &mut Vec<Vec<usize>> = &mut slice::from_raw_parts_mut(bottom_ptr.offset(mid as isize), mid).to_vec();
+//         // println!("{:?}\n\n{:?}\n{:?}\n{:?}\n{:?}\n", A,tl,tr,bl,br);
 //     }
 
-//     // c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
-//     // c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
-//     // c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
-//     // c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
-//     // C = stitch(&c11,&c12,&c21,&c22);
+    // c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec())).to_vec();
+    // c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec())).to_vec();
+    // c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec())).to_vec();
+    // c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec()), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec())).to_vec();
+    // C = stitch(&c11,&c12,&c21,&c22);
 //     C
 // }
 
@@ -68,10 +69,13 @@ use log4rs::{
 pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let n = A.len();
     if n == 1 {
-        trace!("read\tA[0][0]");
-        trace!("read\tB[0][0]");
-        println!("read\tA[0][0]");
-        println!("read\tB[0][0]");
+        // trace!("read\tA[0][0]");
+        // trace!("read\tB[0][0]");
+        // println!("read\tA[0][0]");
+        // println!("read\tB[0][0]");
+        let ptr_a = &A[0][0];
+        let ptr_b = &B[0][0];
+        println!("{} {}", ptr_a, ptr_b);
         return vec![vec![A[0][0] * B[0][0]]]; 
     }
 
