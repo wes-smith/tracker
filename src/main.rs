@@ -13,8 +13,6 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 
-use nanorand::{WyRand};
-
 
 
 fn main() -> std::io::Result<()> {
@@ -45,15 +43,15 @@ fn main() -> std::io::Result<()> {
     let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
     let mut output = File::create(file_name).unwrap();
 
-    let mut rng = WyRand::new();
-    let (mut A, mut B) = init(size);
+    // let mut rng = WyRand::new();
+    let (mut a, mut b) = init(size);
 
     // let (C, _mmdata) = multiply(&mut A,&mut B);
     // println!("{:?}\n{:?}\n{:?}", A,B,C);
 
 
 
-    let (C, mmdata) = multiply(&mut A,&mut B);
+    let (_c, mmdata) = multiply(&mut a,&mut b);
     let a_b_dmd = mmdata.a_b.dmd;
     let cc_dmd = mmdata.c.dmd;
     let temp_dmd = mmdata.temp.dmd;

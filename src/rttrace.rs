@@ -8,11 +8,11 @@ pub struct Data {
 }
 
 pub fn init() -> Data {
-	let mut stack = Box::new(Vec::new());
-	let mut freq_map: Box<HashMap<usize,usize>> = Box::new(HashMap::new());
-	let mut dmd = Box::new(0.0);
+	let stack = Box::new(Vec::new());
+	let freq_map: Box<HashMap<usize,usize>> = Box::new(HashMap::new());
+	let dmd = Box::new(0.0);
 
-	let mut d =  Data {
+	let d =  Data {
 		stack,
 		freq_map,
 		dmd,

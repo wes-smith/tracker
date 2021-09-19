@@ -9,7 +9,7 @@ pub struct MMData{
 }
 
 
-pub fn mm(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
+pub fn mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
     let a_b = init();
     let c = init();
     let temp = init();
@@ -20,55 +20,55 @@ pub fn mm(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>,
     };
 
 
-    (matrix_multiply(A, B, &mut mmdata), mmdata)
+    (matrix_multiply(a, b, &mut mmdata), mmdata)
 }
 
 /*Assuming square matrix & dim is a power of 2  
     https://shivathudi.github.io/jekyll/update/2017/06/15/matr-mult.html
 */
-pub fn matrix_multiply(A: &mut Vec<Vec<usize>>, B: &mut Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
+pub fn matrix_multiply(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
     trace("A.len".to_string(), &mut mmdata.a_b);
-    let n = A.len();
+    let n = a.len();
 
     if n == 1 {
-        trace(A[0][0].to_string(), &mut mmdata.a_b);
-        trace(B[0][0].to_string(), &mut mmdata.a_b);
-        return vec![vec![A[0][0] * B[0][0]]]; 
+        trace(a[0][0].to_string(), &mut mmdata.a_b);
+        trace(b[0][0].to_string(), &mut mmdata.a_b);
+        return vec![vec![a[0][0] * b[0][0]]]; 
     }
 
-    let mut C = vec![vec![0 as usize; n]; n];
+    //let mut c = vec![vec![0 as usize; n]; n];
 
-    let (mut a11,mut a12,mut a21,mut a22) = corners(&A, "A", mmdata); //deal with temp memory
-    let (mut b11,mut b12,mut b21,mut b22) = corners(&B, "B", mmdata);
-    let (mut c11,mut c12,mut c21,mut c22);// = corners(&C);
+    let (a11, a12, a21, a22) = corners(&a, "A", mmdata); //deal with temp memory
+    let (b11, b12, b21, b22) = corners(&b, "B", mmdata);
+    let (c11, c12, c21, c22);// = corners(&C);
 
     c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec(), mmdata), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec(), mmdata), mmdata).to_vec();
     c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec(), mmdata), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec(), mmdata), mmdata).to_vec();
     c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec(), mmdata), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec(), mmdata), mmdata).to_vec();
     c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec(), mmdata), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec(), mmdata), mmdata).to_vec();
-    C = stitch(&c11,&c12,&c21,&c22, mmdata);
-    C
+    let c = stitch(&c11,&c12,&c21,&c22, mmdata);
+    c
 }
 
-fn matrix_add(A: &Vec<Vec<usize>>, B: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
-    let n = A.len();
-    let mut C = vec![vec![0 as usize; n]; n];
+fn matrix_add(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
+    let n = a.len();
+    let mut c = vec![vec![0 as usize; n]; n];
 
-    for (i,row) in C.iter_mut().enumerate(){
+    for (i,row) in c.iter_mut().enumerate(){
         for (j,element) in row.iter_mut().enumerate(){
-            trace(A[i][j].to_string(), &mut mmdata.a_b);
-            trace(B[i][j].to_string(), &mut mmdata.a_b);
+            trace(a[i][j].to_string(), &mut mmdata.a_b);
+            trace(b[i][j].to_string(), &mut mmdata.a_b);
 
             trace("C[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.c);
-            *element = A[i][j] + B[i][j];
+            *element = a[i][j] + b[i][j];
         }
     }
-    C
+    c
 }
 
 pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, br: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>> {
     let n = tl.len();
-    let mut C = Vec::new();
+    let mut c = Vec::new();
 
     for i in 0..(2*n) {
         let mut row = Vec::new();
@@ -92,14 +92,14 @@ pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, 
                 break; //unreachable
             }
         }
-        C.push(row);
+        c.push(row);
     }
-    C
+    c
 }
 
-pub fn corners(A: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
+pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
     trace(id.to_string() + &".len".to_string(), &mut mmdata.a_b);
-    let n = A.len();
+    let n = a.len();
 
     let mut tl: Vec<Vec<usize>> = Vec::new();
     let mut tr: Vec<Vec<usize>> = Vec::new();
@@ -108,7 +108,7 @@ pub fn corners(A: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
 
     if n == 1 {
         trace(id.to_string() + &"[0][0]", &mut mmdata.a_b);
-        tl.push(vec![A[0][0]]);
+        tl.push(vec![a[0][0]]);
         return (tl,tr,bl,br);
     }
 
@@ -118,16 +118,16 @@ pub fn corners(A: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
         for j in 0..n{
             trace(id.to_string() + &"[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.a_b);
             if i < n/2 && j < n/2{ //tl
-                left.push(A[i][j]);
+                left.push(a[i][j]);
             }
             else if i < n/2 && j > n/2{ //tr
-                right.push(A[i][j]);
+                right.push(a[i][j]);
             }
             else if i > n/2-1 && j < n/2{ //bl
-                left.push(A[i][j]);
+                left.push(a[i][j]);
             }
             else{ //br
-                right.push(A[i][j]);
+                right.push(a[i][j]);
             }
         }
         if i < n/2 {
@@ -144,8 +144,8 @@ pub fn corners(A: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
 }
 
 pub fn init_mat(size: usize) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
-    let mut A = Vec::new();
-    let mut B = Vec::new();
+    let mut a = Vec::new();
+    let mut b = Vec::new();
 
     for i in 1..size+1{
         let mut a_row = Vec::new();
@@ -154,10 +154,10 @@ pub fn init_mat(size: usize) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
             a_row.push(size*i+j);
             b_row.push(size*i+j+size*size);
         }
-        A.push(a_row);
-        B.push(b_row);
+        a.push(a_row);
+        b.push(b_row);
     }
-    (A,B)
+    (a,b)
 }
 
 // pub fn corners_raw(A: &mut Vec<Vec<usize>>) -> (Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>){
