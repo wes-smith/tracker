@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub struct Data {
  	stack: Box<Vec<String>>,
-	freq_map: Box<HashMap<usize,usize>>,
+	pub freq_map: Box<HashMap<usize,usize>>,
 	pub dmd: Box<f32>,
 }
 

@@ -1,24 +1,61 @@
 import matplotlib.pyplot as plt
 import glob
 import numpy as np
+import json
 
-def graph_scatter(x,y):
+
+def collect_freq():
+	ab = {}
+	c = {}
+	t = {}
+	path = "/u/agoldfa7/research/tracker/"
+	for file in sorted(glob.glob(path+"*.txt")):
+		cur = open(file)
+		
+		a_line = cur.readline().split(",")
+		for line in a_line:
+			line = line.replace("{"," ").replace("\n","").replace("}","")
+			tmp = line.split(":")
+			if len(tmp) == 2:
+				ab[int(tmp[0])] = int(tmp[1])
+		
+		c_line = cur.readline().split(",")
+		for line in c_line:
+			line = line.replace("{"," ").replace("\n","").replace("}","")
+			tmp = line.split(":")
+			if len(tmp) == 2:
+				c[int(tmp[0])] = int(tmp[1])
+
+		t_line = cur.readline().split(",")
+		for line in t_line:
+			line = line.replace("{"," ").replace("\n","").replace("}","")
+			tmp = line.split(":")
+			if len(tmp) == 2:
+				t[int(tmp[0])] = int(tmp[1])
+
+		cur.close()
+
+	return (ab,c,t)
+
+def graph_scatter(d,title,xlab,ylab,filename):
 	# labels = []
 	# for x_val, y_val in zip(x,y):
 	# 	#labels.append(str(x_val) + "," + str(y_val))
 	# 	labels.append(str(y_val))
 
-	plt.scatter(x,y)
+	for k,v in sorted(d.items()):
+		plt.scatter(k,v)
 
-	plt.title("Data movement distance (DMD) of Quicksort")
-	plt.xlabel("Array size")
-	plt.ylabel("DMD")
+	plt.title(title)
+	plt.xlabel(xlab)
+	plt.ylabel(ylab)
 	#plt.yscale("log")
 
 	# for i, txt in enumerate(labels):
 	# 	plt.annotate(txt, (x[i], y[i]))
 
-	plt.show()
+	plt.savefig("/u/agoldfa7/research/plots/" + filename + ".png", bbox_inches="tight")
+	plt.clf()
 
 # def collect_x():
 # 	res = []
@@ -46,12 +83,6 @@ def graph_scatter(x,y):
 # 			res.append(float(num))
 # 		cur.close()
 # 	return res
-
-def dmd_scatter():
-	x = collect_x()
-	y = collect_y()
-	print(x,y)
-	graph_scatter(x,y)
 
 def collect_data():
 	ab = []
@@ -101,8 +132,14 @@ def stacked_bar():
 	plt.show()
 
 def main():
-	stacked_bar()
-	#print(collect_data())
+	(ab,c,t) = collect_freq()
+
+	# print(ab)
+	# print(c)
+	# print(t)
+	graph_scatter(ab,"Reuse distance distribution on mm size 16x16 (AB)","Reuse distance", "Frequency","ab")
+	graph_scatter(c,"Reuse distance distribution on mm size 16x16 (C)","Reuse distance", "Frequency","c")
+	graph_scatter(t,"Reuse distance distribution on mm size 16x16 (Temp)","Reuse distance", "Frequency","temp")
 
 if __name__ == "__main__":
 	main()

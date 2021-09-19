@@ -40,8 +40,10 @@ fn main() -> std::io::Result<()> {
     let args: Vec<String> = env::args().collect();
     let size = args[1].parse::<usize>().unwrap();
 
-    let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
-    let mut output = File::create(file_name).unwrap();
+    //let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
+    let freq_file_name = String::from("mm_freq_s".to_string() + &args[1] + &".txt".to_string());
+    //let mut output = File::create(file_name).unwrap();
+    let mut freq_output = File::create(freq_file_name).unwrap();
 
     // let mut rng = WyRand::new();
     let (mut a, mut b) = init(size);
@@ -57,11 +59,16 @@ fn main() -> std::io::Result<()> {
     let temp_dmd = mmdata.temp.dmd;
     let total_dmd = *a_b_dmd + *cc_dmd + *temp_dmd;
 
-
+    //println!("{:#?}", mmdata.a_b.freq_map);
+    // write!(
+    //     output,
+    //     "mat_size: {}x{}\ntotal: {}\nA_B: {}\nC: {}\ntemp: {}\n",
+    //     size, size, total_dmd, a_b_dmd, cc_dmd, temp_dmd
+    // )?;
     write!(
-        output,
-        "mat_size: {}x{}\ntotal: {}\nA_B: {}\nC: {}\ntemp: {}\n",
-        size, size, total_dmd, a_b_dmd, cc_dmd, temp_dmd
+        freq_output,
+        "{:?}\n{:?}\n{:?}\n",
+        mmdata.a_b.freq_map, mmdata.c.freq_map,mmdata.temp.freq_map
     )?;
 
 
