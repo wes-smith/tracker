@@ -137,9 +137,9 @@ def main():
 	# print(ab)
 	# print(c)
 	# print(t)
-	graph_scatter(ab,"Reuse distance distribution on mm size 16x16 (AB)","Reuse distance", "Frequency","ab")
-	graph_scatter(c,"Reuse distance distribution on mm size 16x16 (C)","Reuse distance", "Frequency","c")
-	graph_scatter(t,"Reuse distance distribution on mm size 16x16 (Temp)","Reuse distance", "Frequency","temp")
+	graph_scatter(ab,"Reuse distance distribution on strassen size 2x2 (AB)","Reuse distance", "Frequency","ab")
+	graph_scatter(c,"Reuse distance distribution on strassen size 2x2 (C)","Reuse distance", "Frequency","c")
+	graph_scatter(t,"Reuse distance distribution on strassen size 2x2 (Temp)","Reuse distance", "Frequency","temp")
 
 if __name__ == "__main__":
 	main()

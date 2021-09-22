@@ -1,3 +1,8 @@
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+#![allow(unused_mut)]
+
 mod instrumented_algorithms;
 // mod lib;
 // mod parse;
@@ -7,7 +12,7 @@ mod rttrace;
 
 // use instrumented_algorithms::init_arr;
 // use crate::rttrace::Data;
-use instrumented_algorithms::{init,strassen};
+use instrumented_algorithms::{init,strassen, init_i32};
 // use nanorand::{Rng, WyRand};
 
 // use crate::rttrace::Data;
@@ -20,9 +25,16 @@ use std::io::prelude::*;
 
 
 fn main() -> std::io::Result<()> {
-    //test_qs();
-    
+    test_stras()?;
+    // let mut a = Vec::new();
+    // let mut b = Vec::new();
+    // a.push(vec![1,2]);
+    // a.push(vec![1,2]);
+    // b.push(vec![1,2]);
+    // b.push(vec![1,2]);
 
+    // let (c, mmdata) = strassen(&mut a,&mut b);
+    // println!("{:?}", c);
     Ok(())
 }
 
@@ -30,13 +42,13 @@ fn test_stras() -> std::io::Result<()>{
     let args: Vec<String> = env::args().collect();
     let size = args[1].parse::<usize>().unwrap();
 
-    let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
-    //let freq_file_name = String::from("stras_freq_s".to_string() + &args[1] + &".txt".to_string());
-    let mut output = File::create(file_name).unwrap();
-    //let mut freq_output = File::create(freq_file_name).unwrap();
+    //let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
+    let freq_file_name = String::from("stras_freq_s".to_string() + &args[1] + &".txt".to_string());
+    //let mut output = File::create(file_name).unwrap();
+    let mut freq_output = File::create(freq_file_name).unwrap();
 
     // let mut rng = WyRand::new();
-    let (mut a, mut b) = init(size);
+    let (mut a, mut b) = init_i32(size as i32);
 
     // let (C, _mmdata) = multiply(&mut A,&mut B);
     // println!("{:?}\n{:?}\n{:?}", A,B,C);
@@ -50,17 +62,19 @@ fn test_stras() -> std::io::Result<()>{
     let total_dmd = *a_b_dmd + *cc_dmd + *temp_dmd;
 
     //println!("{:#?}", mmdata.a_b.freq_map);
-    write!(
-        output,
-        "mat_size: {}x{}\ntotal: {}\nA_B: {}\nC: {}\ntemp: {}\n",
-        size, size, total_dmd, a_b_dmd, cc_dmd, temp_dmd
-    )?;
+    //println!("{:?}", _c);
     
     // write!(
-    //     freq_output,
-    //     "{:?}\n{:?}\n{:?}\n",
-    //     mmdata.a_b.freq_map, mmdata.c.freq_map,mmdata.temp.freq_map
+    //     output,
+    //     "mat_size: {}x{}\ntotal: {}\nA_B: {}\nC: {}\ntemp: {}\n",
+    //     size, size, total_dmd, a_b_dmd, cc_dmd, temp_dmd
     // )?;
+    
+    write!(
+        freq_output,
+        "{:?}\n{:?}\n{:?}\n",
+        mmdata.a_b.freq_map, mmdata.c.freq_map,mmdata.temp.freq_map
+    )?;
 
     Ok(())
 }
