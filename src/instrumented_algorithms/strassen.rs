@@ -1,15 +1,8 @@
-use crate::rttrace::Data;
+use crate::rttrace::{MMData};
 use crate::rttrace::{init,trace};
 
-#[derive(Debug)]
-pub struct MMData{
-    pub a_b: Data,
-    pub c: Data,
-    pub temp: Data,
-}
 
-
-pub fn mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
+pub fn strassen_mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
     let a_b = init();
     let c = init();
     let temp = init();
@@ -20,7 +13,7 @@ pub fn mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>,
     };
 
 
-    (matrix_multiply(a, b, &mut mmdata), mmdata)
+    (strassen(a, b, &mut mmdata), mmdata)
 }
 
 /*Assuming square matrix & dim is a power of 2  
@@ -38,22 +31,22 @@ pub fn strassen(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata: &mut M
 
     //let mut c = vec![vec![0 as usize; n]; n];
 
-    let (a, b, c, d) = corners(&a, "A", mmdata); //deal with temp memory
-    let (e, f, g, h) = corners(&b, "B", mmdata);
+    let (mut a, mut b, mut c, mut d) = corners(&a, "A", mmdata); //deal with temp memory
+    let (mut e, mut f, mut g, mut h) = corners(&b, "B", mmdata);
     let (c11, c12, c21, c22);
 
-    let p1 = strassen(&a, f - h); 
-    let p2 = strassen(&matrix_add(&a,&b,mmdata), &h);      
-    let p3 = strassen(&matrix_add(&c,&d,mmdata), &e);       
-    let p4 = strassen(&d, &matrix_sub(&g,&e,mmdata));       
-    let p5 = strassen(&matrix_add(&a,&d,mmdata), &matrix_add(&e,&h,mmdata));       
-    let p6 = strassen(&matrix_sub(&b,&d,mmdata), &matrix_add(&g,&h,mmdata));
-    let p7 = strassen(&matrix_sub(&a,&c,mmdata), &matrix_add(&e,&f,mmdata)); 
+    let mut p1 = strassen(&mut a, &mut matrix_sub(&mut f,&mut h, mmdata),mmdata); 
+    let mut p2 = strassen(&mut matrix_add(&mut a,&mut b,mmdata), &mut h,mmdata);      
+    let mut p3 = strassen(&mut matrix_add(&mut c,&mut d,mmdata), &mut e,mmdata);       
+    let mut p4 = strassen(&mut d, &mut matrix_sub(&mut g,&mut e,mmdata),mmdata);       
+    let mut p5 = strassen(&mut matrix_add(&mut a,&mut d,mmdata), &mut matrix_add(&mut e,&mut h,mmdata),mmdata);       
+    let mut p6 = strassen(&mut matrix_sub(&mut b,&mut d,mmdata), &mut matrix_add(&mut g,&mut h,mmdata),mmdata);
+    let mut p7 = strassen(&mut matrix_sub(&mut a,&mut c,mmdata), &mut matrix_add(&mut e,&mut f,mmdata),mmdata); 
 
-    c11 = &matrix_add(&matrix_sub(&matrix_add(&pt, &b, mmdata), &p2, mmdata),&p6, mmdata);
-    c12 = &matrix_add(&p1, &p2, mmdata);//p1 + p2;          
-    c21 = &matrix_add(&p3, &p4, mmdata);//p3 + p4;           
-    c22 = &matrix_sub(&matrix_sub(&matrix_add(&p1, &p5, mmdata),&p3,mmdata),&p7,mmdata);//p1 + p5 - p3 - p7;
+    c11 = matrix_add(&mut matrix_sub(&mut matrix_add(&mut p5, &mut p4, mmdata), &mut p2, mmdata),&mut p6, mmdata);
+    c12 = matrix_add(&mut p1, &mut p2, mmdata);//p1 + p2;          
+    c21 = matrix_add(&mut p3, &mut p4, mmdata);//p3 + p4;           
+    c22 = matrix_sub(&mut matrix_sub(&mut matrix_add(&mut p1, &mut p5, mmdata),&mut p3,mmdata),&mut p7,mmdata);//p1 + p5 - p3 - p7;
 
     let c = stitch(&c11,&c12,&c21,&c22, mmdata);
     c

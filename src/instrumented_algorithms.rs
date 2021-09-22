@@ -1,9 +1,15 @@
 mod matrix_multiply;
 mod quick_sort;
+mod strassen;
 
-use matrix_multiply::{mm,MMData, init_mat};
+use matrix_multiply::{mm, init_mat};
 use quick_sort::{quick_sort_rt,init_arr};
-use crate::rttrace::{Data};
+use strassen::{strassen_mm};
+use crate::rttrace::{Data,MMData};
+
+pub fn strassen(a:&mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
+    strassen_mm(a,b)
+}
 
 pub fn multiply(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
     mm(a,b)

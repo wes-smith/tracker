@@ -1,12 +1,12 @@
-use crate::rttrace::Data;
+use crate::rttrace::{MMData};
 use crate::rttrace::{init,trace};
 
-#[derive(Debug)]
-pub struct MMData{
-    pub a_b: Data,
-    pub c: Data,
-    pub temp: Data,
-}
+// #[derive(Debug)]
+// pub struct MMData{
+//     pub a_b: Data,
+//     pub c: Data,
+//     pub temp: Data,
+// }
 
 
 pub fn mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){

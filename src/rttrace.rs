@@ -7,6 +7,13 @@ pub struct Data {
 	pub dmd: Box<f32>,
 }
 
+#[derive(Debug)]
+pub struct MMData{
+    pub a_b: Data,
+    pub c: Data,
+    pub temp: Data,
+}
+
 pub fn init() -> Data {
 	let stack = Box::new(Vec::new());
 	let freq_map: Box<HashMap<usize,usize>> = Box::new(HashMap::new());
