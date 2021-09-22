@@ -19,29 +19,7 @@ use std::io::prelude::*;
 
 fn main() -> std::io::Result<()> {
     test_qs();
-    // let mut A = Vec::new();
-    // A.push(vec![1,2]);
-    // A.push(vec![3,4]);
-    // let mut B = Vec::new();
-    // B.push(vec![5,6]);
-    // B.push(vec![7,8]);
-    // // let mut A = Vec::new();
-    // // A.push(vec![1,2,3,4]);
-    // // A.push(vec![5,6,7,8]);
-    // // A.push(vec![1,2,3,4]);
-    // // A.push(vec![5,6,7,8]);
-    // // let mut B = Vec::new();
-    // // B.push(vec![1,2,3,4]);
-    // // B.push(vec![5,6,7,8]);
-    // // B.push(vec![1,2,3,4]);
-    // // B.push(vec![5,6,7,8]);
-
-    // let (C, mmdata) = multiply(&mut A,&mut B);
-
-    // println!("{:?}\nmmdata: {:?}", C, mmdata);
-
     
-
 
     Ok(())
 }
