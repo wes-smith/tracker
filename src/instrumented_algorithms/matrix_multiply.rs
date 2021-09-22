@@ -160,6 +160,23 @@ pub fn init_mat(size: usize) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
     (a,b)
 }
 
+pub fn init_mat_i32(size: i32) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
+    let mut a = Vec::new();
+    let mut b = Vec::new();
+
+    for i in 1..size+1{
+        let mut a_row = Vec::new();
+        let mut b_row = Vec::new();
+        for j in 0..size{
+            a_row.push(size*i+j);
+            b_row.push(size*i+j+size*size);
+        }
+        a.push(a_row);
+        b.push(b_row);
+    }
+    (a,b)
+}
+
 // pub fn corners_raw(A: &mut Vec<Vec<usize>>) -> (Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>, Box<&Vec<Vec<usize>>>){
 //     //println!("{:?}\n", A);
 //     let len = A.len();

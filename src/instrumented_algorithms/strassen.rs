@@ -2,7 +2,7 @@ use crate::rttrace::{MMData};
 use crate::rttrace::{init,trace};
 
 
-pub fn strassen_mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
+pub fn strassen_mm(a: &mut Vec<Vec<i32>>, b: &mut Vec<Vec<i32>>) -> (Vec<Vec<i32>>, MMData){
     let a_b = init();
     let c = init();
     let temp = init();
@@ -19,42 +19,43 @@ pub fn strassen_mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec
 /*Assuming square matrix & dim is a power of 2  
     https://www.geeksforgeeks.org/strassens-matrix-multiplication/
 */
-pub fn strassen(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
+pub fn strassen(m1: &mut Vec<Vec<i32>>, m2: &mut Vec<Vec<i32>>, mmdata: &mut MMData) -> Vec<Vec<i32>>{
     trace("A.len".to_string(), &mut mmdata.a_b);
-    let n = a.len();
+    let n = m1.len();
 
     if n == 1 {
-        trace(a[0][0].to_string(), &mut mmdata.a_b);
-        trace(b[0][0].to_string(), &mut mmdata.a_b);
-        return vec![vec![a[0][0] * b[0][0]]]; 
+        trace(m1[0][0].to_string(), &mut mmdata.a_b);
+        trace(m2[0][0].to_string(), &mut mmdata.a_b);
+        return vec![vec![m1[0][0] * m2[0][0]]]; 
     }
 
-    //let mut c = vec![vec![0 as usize; n]; n];
+    //let mut c = vec![vec![0 as i32; n]; n];
 
-    let (mut a, mut b, mut c, mut d) = corners(&a, "A", mmdata); //deal with temp memory
-    let (mut e, mut f, mut g, mut h) = corners(&b, "B", mmdata);
+    let (mut a, mut b, mut c, mut d) = corners(&m1, "A", mmdata); //deal with temp memory
+    let (mut e, mut f, mut g, mut h) = corners(&m2, "B", mmdata);
+    //println!("a:{:?} b:{:?} c:{:?} d:{:?} e:{:?} f:{:?} g:{:?} h:{:?}", a,b,c,d,e,f,g,h);
     let (c11, c12, c21, c22);
 
-    let mut p1 = strassen(&mut a, &mut matrix_sub(&mut f,&mut h, mmdata),mmdata); 
-    let mut p2 = strassen(&mut matrix_add(&mut a,&mut b,mmdata), &mut h,mmdata);      
-    let mut p3 = strassen(&mut matrix_add(&mut c,&mut d,mmdata), &mut e,mmdata);       
-    let mut p4 = strassen(&mut d, &mut matrix_sub(&mut g,&mut e,mmdata),mmdata);       
-    let mut p5 = strassen(&mut matrix_add(&mut a,&mut d,mmdata), &mut matrix_add(&mut e,&mut h,mmdata),mmdata);       
-    let mut p6 = strassen(&mut matrix_sub(&mut b,&mut d,mmdata), &mut matrix_add(&mut g,&mut h,mmdata),mmdata);
-    let mut p7 = strassen(&mut matrix_sub(&mut a,&mut c,mmdata), &mut matrix_add(&mut e,&mut f,mmdata),mmdata); 
+    let mut p1 = &strassen(&mut a, &mut matrix_sub(&mut f,&mut h, mmdata),mmdata); 
+    let mut p2 = &strassen(&mut matrix_add(&mut a,&mut b,mmdata), &mut h,mmdata);      
+    let mut p3 = &strassen(&mut matrix_add(&mut c,&mut d,mmdata), &mut e,mmdata);       
+    let mut p4 = &strassen(&mut d, &mut matrix_sub(&mut g,&mut e,mmdata),mmdata);       
+    let mut p5 = &strassen(&mut matrix_add(&mut a,&mut d,mmdata), &mut matrix_add(&mut e,&mut h,mmdata),mmdata);       
+    let mut p6 = &strassen(&mut matrix_sub(&mut b,&mut d,mmdata), &mut matrix_add(&mut g,&mut h,mmdata),mmdata);
+    let mut p7 = &strassen(&mut matrix_sub(&mut a,&mut c,mmdata), &mut matrix_add(&mut e,&mut f,mmdata),mmdata); 
 
-    c11 = matrix_add(&mut matrix_sub(&mut matrix_add(&mut p5, &mut p4, mmdata), &mut p2, mmdata),&mut p6, mmdata);
-    c12 = matrix_add(&mut p1, &mut p2, mmdata);//p1 + p2;          
-    c21 = matrix_add(&mut p3, &mut p4, mmdata);//p3 + p4;           
-    c22 = matrix_sub(&mut matrix_sub(&mut matrix_add(&mut p1, &mut p5, mmdata),&mut p3,mmdata),&mut p7,mmdata);//p1 + p5 - p3 - p7;
+    c11 = matrix_add(&mut matrix_sub(&mut matrix_add(p5,p4, mmdata),p2, mmdata), p6, mmdata); //p5 + p4 - p2 + p6
+    c12 = matrix_add(p1, p2, mmdata); //p1 + p2;          
+    c21 = matrix_add(p3, p4, mmdata); //p3 + p4;           
+    c22 = matrix_sub(&mut matrix_sub(&mut matrix_add(p1,p5, mmdata),p3,mmdata),p7,mmdata); //p1 + p5 - p3 - p7;
 
     let c = stitch(&c11,&c12,&c21,&c22, mmdata);
     c
 }
 
-fn matrix_add(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
+fn matrix_add(a: &Vec<Vec<i32>>, b: &Vec<Vec<i32>>, mmdata: &mut MMData) -> Vec<Vec<i32>>{
     let n = a.len();
-    let mut c = vec![vec![0 as usize; n]; n];
+    let mut c = vec![vec![0 as i32; n]; n];
 
     for (i,row) in c.iter_mut().enumerate(){
         for (j,element) in row.iter_mut().enumerate(){
@@ -68,9 +69,9 @@ fn matrix_add(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, mmdata: &mut MMData) -> 
     c
 }
 
-fn matrix_sub(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
+fn matrix_sub(a: &Vec<Vec<i32>>, b: &Vec<Vec<i32>>, mmdata: &mut MMData) -> Vec<Vec<i32>>{
     let n = a.len();
-    let mut c = vec![vec![0 as usize; n]; n];
+    let mut c = vec![vec![0 as i32; n]; n];
 
     for (i,row) in c.iter_mut().enumerate(){
         for (j,element) in row.iter_mut().enumerate(){
@@ -84,7 +85,7 @@ fn matrix_sub(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, mmdata: &mut MMData) -> 
     c
 }
 
-pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, br: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>> {
+pub fn stitch(tl: &Vec<Vec<i32>>, tr: &Vec<Vec<i32>>, bl: &Vec<Vec<i32>>, br: &Vec<Vec<i32>>, mmdata: &mut MMData) -> Vec<Vec<i32>> {
     let n = tl.len();
     let mut c = Vec::new();
 
@@ -115,14 +116,15 @@ pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, 
     c
 }
 
-pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
+pub fn corners(a: &Vec<Vec<i32>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<i32>>, Vec<Vec<i32>>, Vec<Vec<i32>>, Vec<Vec<i32>>){
+    println!("corners on {:?}", a);
     trace(id.to_string() + &".len".to_string(), &mut mmdata.a_b);
     let n = a.len();
 
-    let mut tl: Vec<Vec<usize>> = Vec::new();
-    let mut tr: Vec<Vec<usize>> = Vec::new();
-    let mut bl: Vec<Vec<usize>> = Vec::new();
-    let mut br: Vec<Vec<usize>> = Vec::new();
+    let mut tl: Vec<Vec<i32>> = Vec::new();
+    let mut tr: Vec<Vec<i32>> = Vec::new();
+    let mut bl: Vec<Vec<i32>> = Vec::new();
+    let mut br: Vec<Vec<i32>> = Vec::new();
 
     if n == 1 {
         trace(id.to_string() + &"[0][0]", &mut mmdata.a_b);
@@ -131,8 +133,8 @@ pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
     }
 
     for i in 0..n{
-        let mut left: Vec<usize> = Vec::new();
-        let mut right: Vec<usize> = Vec::new();
+        let mut left: Vec<i32> = Vec::new();
+        let mut right: Vec<i32> = Vec::new();
         for j in 0..n{
             trace(id.to_string() + &"[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.a_b);
             if i < n/2 && j < n/2{ //tl
@@ -161,7 +163,7 @@ pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
     return (tl,tr,bl,br);
 }
 
-pub fn init_mat(size: usize) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
+pub fn init_mat(size: i32) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     let mut a = Vec::new();
     let mut b = Vec::new();
 
