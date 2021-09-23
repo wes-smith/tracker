@@ -57,6 +57,72 @@ def graph_scatter(d,title,xlab,ylab,filename):
 	plt.savefig("/u/agoldfa7/research/plots/" + filename + ".png", bbox_inches="tight")
 	plt.clf()
 
+def collect_data():
+	ab = []
+	c = []
+	temp = []
+	#path = "/u/agoldfa7/research/tracker/mm_data/"
+	path = "/home/aidan/Research/tracker/"
+	for file in sorted(glob.glob(path+"*.txt")):
+		cur = open(file)
+		lines = cur.readlines()
+		
+		ab.append(float(lines[2].split(": ")[1].replace("\n", "")))
+		c.append(float(lines[3].split(": ")[1].replace("\n", "")))
+		temp.append(float(lines[4].split(": ")[1].replace("\n", ""))) 
+
+		# ab.append(lines[2].split(": ")[1].replace("\n", ""))
+		# c.append(lines[3].split(": ")[1].replace("\n", ""))
+		# temp.append(lines[4].split(": ")[1].replace("\n", ""))
+		cur.close()
+	ab.sort()
+	c.sort()
+	temp.sort()
+	return (ab,c,temp)
+
+def stacked_bar(filename, dim):
+	labels = [dim]
+	(ab,c,temp) = collect_data()
+
+	#print(ab)
+
+	ab_arr = np.array(ab)
+	c_arr = np.array(c)
+	t_arr = np.array(temp)
+
+	width = 0.35       # the width of the bars: can also be len(x) sequence
+
+	fig, ax = plt.subplots()
+
+	ax.bar(labels, ab_arr, width, label='A and B')
+	ax.bar(labels, c_arr, width, bottom=ab_arr, label='C')
+	ax.bar(labels, t_arr, width, bottom=ab_arr+c_arr, label='temp')
+		
+
+	ax.set_ylabel('DMD')
+	ax.set_xlabel('Matrix dimensions')
+	ax.set_title('DMD of mm' )
+	ax.legend()
+
+	#plt.yscale("log")
+	#plt.show()
+	plt.savefig("/home/aidan/Research/plots/" + filename + ".png", bbox_inches="tight")
+
+def main():
+	dim = "32x32"
+	stacked_bar("Per element DMD on mm size " + dim, dim)
+	#(ab,c,t) = collect_freq()
+
+	# print(ab)
+	# print(c)
+	# print(t)
+	#graph_scatter(ab,"Reuse distance distribution on strassen size 2x2 (AB)","Reuse distance", "Frequency","ab")
+	#graph_scatter(c,"Reuse distance distribution on strassen size 2x2 (C)","Reuse distance", "Frequency","c")
+	#graph_scatter(t,"Reuse distance distribution on strassen size 2x2 (Temp)","Reuse distance", "Frequency","temp")
+
+if __name__ == "__main__":
+	main()
+
 # def collect_x():
 # 	res = []
 # 	path = "/u/agoldfa7/research/tracker/target/debug/"
@@ -83,63 +149,3 @@ def graph_scatter(d,title,xlab,ylab,filename):
 # 			res.append(float(num))
 # 		cur.close()
 # 	return res
-
-def collect_data():
-	ab = []
-	c = []
-	temp = []
-	path = "/u/agoldfa7/research/tracker/mm_data/"
-	for file in sorted(glob.glob(path+"*.txt")):
-		cur = open(file)
-		lines = cur.readlines()
-		
-		ab.append(float(lines[2].split(": ")[1].replace("\n", "")))
-		c.append(float(lines[3].split(": ")[1].replace("\n", "")))
-		temp.append(float(lines[4].split(": ")[1].replace("\n", ""))) 
-
-		# ab.append(lines[2].split(": ")[1].replace("\n", ""))
-		# c.append(lines[3].split(": ")[1].replace("\n", ""))
-		# temp.append(lines[4].split(": ")[1].replace("\n", ""))
-		cur.close()
-	ab.sort()
-	c.sort()
-	temp.sort()
-	return (ab,c,temp)
-
-def stacked_bar():
-	labels = ['2x2', '4x4', '8x8', '16x16']
-	(ab,c,temp) = collect_data()
-
-	ab_arr = np.array(ab)
-	c_arr = np.array(c)
-	t_arr = np.array(temp)
-
-	width = 0.35       # the width of the bars: can also be len(x) sequence
-
-	fig, ax = plt.subplots()
-
-	ax.bar(labels, ab_arr, width, label='A and B')
-	ax.bar(labels, c_arr, width, bottom=ab_arr, label='C')
-	ax.bar(labels, t_arr, width, bottom=ab_arr+c_arr, label='temp')
-		
-
-	ax.set_ylabel('DMD')
-	ax.set_xlabel('Matrix dimensions')
-	ax.set_title('DMD of recursive mm')
-	ax.legend()
-
-	plt.yscale("log")
-	plt.show()
-
-def main():
-	(ab,c,t) = collect_freq()
-
-	# print(ab)
-	# print(c)
-	# print(t)
-	graph_scatter(ab,"Reuse distance distribution on strassen size 2x2 (AB)","Reuse distance", "Frequency","ab")
-	graph_scatter(c,"Reuse distance distribution on strassen size 2x2 (C)","Reuse distance", "Frequency","c")
-	graph_scatter(t,"Reuse distance distribution on strassen size 2x2 (Temp)","Reuse distance", "Frequency","temp")
-
-if __name__ == "__main__":
-	main()

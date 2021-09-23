@@ -42,10 +42,10 @@ fn test_stras() -> std::io::Result<()>{
     let args: Vec<String> = env::args().collect();
     let size = args[1].parse::<usize>().unwrap();
 
-    //let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
-    let freq_file_name = String::from("stras_freq_s".to_string() + &args[1] + &".txt".to_string());
-    //let mut output = File::create(file_name).unwrap();
-    let mut freq_output = File::create(freq_file_name).unwrap();
+    let file_name = String::from("mm_s".to_string() + &args[1] + &".txt".to_string());
+    //let freq_file_name = String::from("stras_freq_s".to_string() + &args[1] + &".txt".to_string());
+    let mut output = File::create(file_name).unwrap();
+    //let mut freq_output = File::create(freq_file_name).unwrap();
 
     // let mut rng = WyRand::new();
     let (mut a, mut b) = init_i32(size as i32);
@@ -56,25 +56,29 @@ fn test_stras() -> std::io::Result<()>{
 
 
     let (_c, mmdata) = strassen(&mut a,&mut b);
-    let a_b_dmd = mmdata.a_b.dmd;
-    let cc_dmd = mmdata.c.dmd;
-    let temp_dmd = mmdata.temp.dmd;
-    let total_dmd = *a_b_dmd + *cc_dmd + *temp_dmd;
+    // let a_b_dmd = mmdata.a_b.dmd;
+    // let cc_dmd = mmdata.c.dmd;
+    // let temp_dmd = mmdata.temp.dmd;
+    // let total_dmd = *a_b_dmd + *cc_dmd + *temp_dmd;
+    let a_b_dmd = *mmdata.a_b.dmd/mmdata.a_b.stack.len() as f32;
+    let cc_dmd = *mmdata.c.dmd/mmdata.c.stack.len() as f32;
+    let temp_dmd = *mmdata.temp.dmd/mmdata.temp.stack.len() as f32; 
+    let total_dmd = a_b_dmd + cc_dmd + temp_dmd;
 
     //println!("{:#?}", mmdata.a_b.freq_map);
     //println!("{:?}", _c);
     
-    // write!(
-    //     output,
-    //     "mat_size: {}x{}\ntotal: {}\nA_B: {}\nC: {}\ntemp: {}\n",
-    //     size, size, total_dmd, a_b_dmd, cc_dmd, temp_dmd
-    // )?;
-    
     write!(
-        freq_output,
-        "{:?}\n{:?}\n{:?}\n",
-        mmdata.a_b.freq_map, mmdata.c.freq_map,mmdata.temp.freq_map
+        output,
+        "mat_size: {}x{}\ntotal: {}\nA_B: {}\nC: {}\ntemp: {}\n",
+        size, size, total_dmd, a_b_dmd, cc_dmd, temp_dmd
     )?;
+    
+    // write!(
+    //     freq_output,
+    //     "{:?}\n{:?}\n{:?}\n",
+    //     mmdata.a_b.freq_map, mmdata.c.freq_map,mmdata.temp.freq_map
+    // )?;
 
     Ok(())
 }

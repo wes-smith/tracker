@@ -117,7 +117,6 @@ pub fn stitch(tl: &Vec<Vec<i32>>, tr: &Vec<Vec<i32>>, bl: &Vec<Vec<i32>>, br: &V
 }
 
 pub fn corners(a: &Vec<Vec<i32>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<i32>>, Vec<Vec<i32>>, Vec<Vec<i32>>, Vec<Vec<i32>>){
-    println!("corners on {:?}", a);
     trace(id.to_string() + &".len".to_string(), &mut mmdata.a_b);
     let n = a.len();
 
