@@ -28,54 +28,123 @@ pub fn mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>,
 */
 pub fn matrix_multiply(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
     trace("A.len".to_string(), &mut mmdata.a_b);
+    trace("n1".to_string(), &mut mmdata.temp);
     let n = a.len();
 
+    trace("n".to_string(), &mut mmdata.temp);
     if n == 1 {
         trace(a[0][0].to_string(), &mut mmdata.a_b);
         trace(b[0][0].to_string(), &mut mmdata.a_b);
         return vec![vec![a[0][0] * b[0][0]]]; 
     }
 
-    //let mut c = vec![vec![0 as usize; n]; n];
-
     let (a11, a12, a21, a22) = corners(&a, "A", mmdata); //deal with temp memory
     let (b11, b12, b21, b22) = corners(&b, "B", mmdata);
-    let (c11, c12, c21, c22);// = corners(&C);
+    let (c11, c12, c21, c22);
 
-    c11 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec(), mmdata), &mut matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec(), mmdata), mmdata).to_vec();
-    c12 = matrix_add(&matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec(), mmdata), &mut matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec(), mmdata), mmdata).to_vec();
-    c21 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec(), mmdata), &mut matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec(), mmdata), mmdata).to_vec();
-    c22 = matrix_add(&matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec(), mmdata), &mut matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec(), mmdata), mmdata).to_vec();
-    let c = stitch(&c11,&c12,&c21,&c22, mmdata);
-    c
+
+    trace(a11[0][0].to_string(), &mut mmdata.a_b);
+    trace(b11[0][0].to_string(), &mut mmdata.a_b);
+    let mut a11_times_b11 = matrix_multiply(&mut a11.to_vec(), &mut b11.to_vec(), mmdata);
+
+    trace(a12[0][0].to_string(), &mut mmdata.a_b);
+    trace(b21[0][0].to_string(), &mut mmdata.a_b);
+    let mut a12_times_b21 = matrix_multiply(&mut a12.to_vec(), &mut b21.to_vec(), mmdata);
+
+    trace(a11_times_b11[0][0].to_string(), &mut mmdata.temp);
+    trace(a12_times_b21[0][0].to_string(), &mut mmdata.temp);
+    c11 = matrix_add(&mut a11_times_b11, &mut a12_times_b21, mmdata).to_vec();
+
+
+
+    trace(a11[0][0].to_string(), &mut mmdata.a_b);
+    trace(b12[0][0].to_string(), &mut mmdata.a_b);
+    let mut a11_times_b12 = matrix_multiply(&mut a11.to_vec(), &mut b12.to_vec(), mmdata);
+
+    trace(a12[0][0].to_string(), &mut mmdata.a_b);
+    trace(b22[0][0].to_string(), &mut mmdata.a_b);
+    let mut a12_times_b22 = matrix_multiply(&mut a12.to_vec(), &mut b22.to_vec(), mmdata);
+
+    trace(a11_times_b12[0][0].to_string(), &mut mmdata.temp);
+    trace(a12_times_b22[0][0].to_string(), &mut mmdata.temp);
+    c12 = matrix_add(&a11_times_b12, &mut a12_times_b22, mmdata).to_vec();
+
+
+
+    trace(a21[0][0].to_string(), &mut mmdata.a_b);
+    trace(b11[0][0].to_string(), &mut mmdata.a_b);
+    let mut a21_times_b11 = matrix_multiply(&mut a21.to_vec(), &mut b11.to_vec(), mmdata);
+
+    trace(a22[0][0].to_string(), &mut mmdata.a_b);
+    trace(b21[0][0].to_string(), &mut mmdata.a_b);
+    let mut a22_times_b21 = matrix_multiply(&mut a22.to_vec(), &mut b21.to_vec(), mmdata);
+
+    trace(a21_times_b11[0][0].to_string(), &mut mmdata.temp);
+    trace(a22_times_b21[0][0].to_string(), &mut mmdata.temp);
+    c21 = matrix_add(&mut a21_times_b11, &mut a22_times_b21, mmdata).to_vec();
+
+
+
+    trace(a21[0][0].to_string(), &mut mmdata.a_b);
+    trace(b12[0][0].to_string(), &mut mmdata.a_b);
+    let mut a21_times_b12 = matrix_multiply(&mut a21.to_vec(), &mut b12.to_vec(), mmdata);
+
+    trace(a22[0][0].to_string(), &mut mmdata.a_b);
+    trace(b22[0][0].to_string(), &mut mmdata.a_b);
+    let mut a22_times_b22 = matrix_multiply(&mut a22.to_vec(), &mut b22.to_vec(), mmdata);
+
+    trace(a21_times_b12[0][0].to_string(), &mut mmdata.temp);
+    trace(a22_times_b22[0][0].to_string(), &mut mmdata.temp);
+    c22 = matrix_add(&mut a21_times_b12, &mut a22_times_b22, mmdata).to_vec();
+    
+
+    stitch(&c11,&c12,&c21,&c22, mmdata)
 }
 
 fn matrix_add(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
+    trace(a[0][0].to_string(), &mut mmdata.temp);
+    trace("n_add".to_string(), &mut mmdata.temp);
     let n = a.len();
     let mut c = vec![vec![0 as usize; n]; n];
 
-    for (i,row) in c.iter_mut().enumerate(){
-        for (j,element) in row.iter_mut().enumerate(){
+    trace("i_add".to_string(), &mut mmdata.temp);
+    trace("c_len".to_string(), &mut mmdata.c);
+    for i in 0..c.len(){
+        trace("j_add".to_string(), &mut mmdata.temp);
+        trace("c_len".to_string(), &mut mmdata.c);
+        for j in 0..c.len(){
             trace(a[i][j].to_string(), &mut mmdata.a_b);
             trace(b[i][j].to_string(), &mut mmdata.a_b);
 
             trace("C[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.c);
-            *element = a[i][j] + b[i][j];
+            c[i][j] = a[i][j] + b[i][j];
+            trace("j_add".to_string(), &mut mmdata.temp);
+            trace("c_len".to_string(), &mut mmdata.c);
         }
+        trace("i_add".to_string(), &mut mmdata.temp);
+        trace("c_len".to_string(), &mut mmdata.c);
     }
     c
 }
 
 pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, br: &Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>> {
+    trace(tl[0][0].to_string(), &mut mmdata.temp);
+    trace("n_stitch".to_string(), &mut mmdata.temp);
     let n = tl.len();
     let mut c = Vec::new();
 
+    trace("i_stitch".to_string(), &mut mmdata.temp);
+    trace("n_stitch".to_string(), &mut mmdata.temp);
     for i in 0..(2*n) {
         let mut row = Vec::new();
+        trace("j_stitch".to_string(), &mut mmdata.temp);
+        trace("n_stitch".to_string(), &mut mmdata.temp);
         for j in 0..(2*n) {
-            //println!("{:?}","C[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string());
+
+            trace("i_stitch".to_string(), &mut mmdata.temp);
+            trace("j_stitch".to_string(), &mut mmdata.temp);
             trace("C[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.c);
-            trace("temp[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.temp);
+            //trace("temp[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.temp);
             if i <= n/2 && j <= n/2{ //tl
                 row.push(tl[i/2][j/2]);
             }
@@ -91,14 +160,19 @@ pub fn stitch(tl: &Vec<Vec<usize>>, tr: &Vec<Vec<usize>>, bl: &Vec<Vec<usize>>, 
             else{
                 break; //unreachable
             }
+            trace("j_stitch".to_string(), &mut mmdata.temp);
+            trace("n_stitch".to_string(), &mut mmdata.temp);
         }
         c.push(row);
+        trace("i_stitch".to_string(), &mut mmdata.temp);
+        trace("n_stitch".to_string(), &mut mmdata.temp);
     }
     c
 }
 
 pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>){
     trace(id.to_string() + &".len".to_string(), &mut mmdata.a_b);
+    trace("n_corner".to_string(), &mut mmdata.temp);
     let n = a.len();
 
     let mut tl: Vec<Vec<usize>> = Vec::new();
@@ -106,6 +180,7 @@ pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
     let mut bl: Vec<Vec<usize>> = Vec::new();
     let mut br: Vec<Vec<usize>> = Vec::new();
 
+    trace("n_corner".to_string(), &mut mmdata.temp);
     if n == 1 {
         trace(id.to_string() + &"[0][0]", &mut mmdata.a_b);
         tl.push(vec![a[0][0]]);
@@ -116,6 +191,9 @@ pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
         let mut left: Vec<usize> = Vec::new();
         let mut right: Vec<usize> = Vec::new();
         for j in 0..n{
+
+            trace("i_corner".to_string(), &mut mmdata.temp);
+            trace("j_corner".to_string(), &mut mmdata.temp);
             trace(id.to_string() + &"[".to_string() + &i.to_string() + &"][".to_string() + &j.to_string() + &"]".to_string(), &mut mmdata.a_b);
             if i < n/2 && j < n/2{ //tl
                 left.push(a[i][j]);
@@ -130,6 +208,8 @@ pub fn corners(a: &Vec<Vec<usize>>, id: &str, mmdata: &mut MMData) -> (Vec<Vec<u
                 right.push(a[i][j]);
             }
         }
+        trace("i_corner".to_string(), &mut mmdata.temp);
+        trace("n_corner".to_string(), &mut mmdata.temp);
         if i < n/2 {
             tl.push(left);
             tr.push(right);

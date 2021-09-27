@@ -62,7 +62,7 @@ def collect_data():
 	c = []
 	temp = []
 	#path = "/u/agoldfa7/research/tracker/mm_data/"
-	path = "/home/aidan/Research/tracker/"
+	path = "/u/agoldfa7/research/tracker/"
 	for file in sorted(glob.glob(path+"*.txt")):
 		cur = open(file)
 		lines = cur.readlines()
@@ -106,11 +106,11 @@ def stacked_bar(filename, dim):
 
 	#plt.yscale("log")
 	#plt.show()
-	plt.savefig("/home/aidan/Research/plots/" + filename + ".png", bbox_inches="tight")
+	plt.savefig("/u/agoldfa7/research/plots/" + filename + ".png", bbox_inches="tight")
 
 def main():
-	dim = "32x32"
-	stacked_bar("Per element DMD on mm size " + dim, dim)
+	dim = "16x16"
+	stacked_bar("DMD on mm size " + dim, dim)
 	#(ab,c,t) = collect_freq()
 
 	# print(ab)
