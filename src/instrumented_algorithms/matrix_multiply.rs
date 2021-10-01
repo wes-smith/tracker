@@ -23,7 +23,7 @@ pub fn mm(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>,
     (matrix_multiply(a, b, &mut mmdata), mmdata)
 }
 
-pub fn mm_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, do_a: bool, val: &usize) -> (Vec<Vec<usize>>, MMData){
+pub fn mm_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
     let a_b = init();
     let c = init();
     let temp = init();
@@ -34,7 +34,7 @@ pub fn mm_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, do_a: bool, val: &
     };
 
 
-    (matrix_multiply_s(a, b, &mut mmdata,do_a, val), mmdata)
+    (matrix_multiply_s(a, b, &mut mmdata), mmdata)
 }
 
 /*Assuming square matrix & dim is a power of 2  
@@ -118,21 +118,15 @@ pub fn matrix_multiply(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata:
 /*Assuming square matrix & dim is a power of 2  
     https://shivathudi.github.io/jekyll/update/2017/06/15/matr-mult.html
 */
-pub fn matrix_multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata: &mut MMData, do_a: bool, val: &usize) -> Vec<Vec<usize>>{
+pub fn matrix_multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdata: &mut MMData) -> Vec<Vec<usize>>{
     // trace("A.len".to_string(), &mut mmdata.a_b);
     // trace("n1".to_string(), &mut mmdata.temp);
     let n = a.len();
 
     //trace("n".to_string(), &mut mmdata.temp);
     if n == 1 {
-        if do_a && a[0][0] == *val{
-            trace(a[0][0].to_string(), &mut mmdata.a_b);
-        }
-            
-        else if !do_a && b[0][0] == *val{
-            trace(b[0][0].to_string(), &mut mmdata.a_b);
-        }
-            
+        trace(a[0][0].to_string(), &mut mmdata.a_b);
+        trace(b[0][0].to_string(), &mut mmdata.a_b);   
         return vec![vec![a[0][0] * b[0][0]]]; 
     }
 
@@ -141,13 +135,14 @@ pub fn matrix_multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdat
     let (c11, c12, c21, c22);
 
 
+    
     trace(a11[0][0].to_string(), &mut mmdata.a_b);
     trace(b11[0][0].to_string(), &mut mmdata.a_b);
-    let mut a11_times_b11 = matrix_multiply_s(&mut a11.to_vec(), &mut b11.to_vec(), mmdata, do_a, val);
+    let mut a11_times_b11 = matrix_multiply_s(&mut a11.to_vec(), &mut b11.to_vec(), mmdata);
 
     trace(a12[0][0].to_string(), &mut mmdata.a_b);
     trace(b21[0][0].to_string(), &mut mmdata.a_b);
-    let mut a12_times_b21 = matrix_multiply_s(&mut a12.to_vec(), &mut b21.to_vec(), mmdata, do_a, val);
+    let mut a12_times_b21 = matrix_multiply_s(&mut a12.to_vec(), &mut b21.to_vec(), mmdata);
 
     // trace(a11_times_b11[0][0].to_string(), &mut mmdata.temp);
     // trace(a12_times_b21[0][0].to_string(), &mut mmdata.temp);
@@ -157,11 +152,11 @@ pub fn matrix_multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdat
 
     trace(a11[0][0].to_string(), &mut mmdata.a_b);
     trace(b12[0][0].to_string(), &mut mmdata.a_b);
-    let mut a11_times_b12 = matrix_multiply_s(&mut a11.to_vec(), &mut b12.to_vec(), mmdata, do_a, val);
+    let mut a11_times_b12 = matrix_multiply_s(&mut a11.to_vec(), &mut b12.to_vec(), mmdata);
 
     trace(a12[0][0].to_string(), &mut mmdata.a_b);
     trace(b22[0][0].to_string(), &mut mmdata.a_b);
-    let mut a12_times_b22 = matrix_multiply_s(&mut a12.to_vec(), &mut b22.to_vec(), mmdata, do_a, val);
+    let mut a12_times_b22 = matrix_multiply_s(&mut a12.to_vec(), &mut b22.to_vec(), mmdata);
 
     // trace(a11_times_b12[0][0].to_string(), &mut mmdata.temp);
     // trace(a12_times_b22[0][0].to_string(), &mut mmdata.temp);
@@ -171,11 +166,11 @@ pub fn matrix_multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdat
 
     trace(a21[0][0].to_string(), &mut mmdata.a_b);
     trace(b11[0][0].to_string(), &mut mmdata.a_b);
-    let mut a21_times_b11 = matrix_multiply_s(&mut a21.to_vec(), &mut b11.to_vec(), mmdata, do_a, val);
+    let mut a21_times_b11 = matrix_multiply_s(&mut a21.to_vec(), &mut b11.to_vec(), mmdata);
 
     trace(a22[0][0].to_string(), &mut mmdata.a_b);
     trace(b21[0][0].to_string(), &mut mmdata.a_b);
-    let mut a22_times_b21 = matrix_multiply_s(&mut a22.to_vec(), &mut b21.to_vec(), mmdata, do_a, val);
+    let mut a22_times_b21 = matrix_multiply_s(&mut a22.to_vec(), &mut b21.to_vec(), mmdata);
 
     // trace(a21_times_b11[0][0].to_string(), &mut mmdata.temp);
     // trace(a22_times_b21[0][0].to_string(), &mut mmdata.temp);
@@ -185,11 +180,11 @@ pub fn matrix_multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, mmdat
 
     trace(a21[0][0].to_string(), &mut mmdata.a_b);
     trace(b12[0][0].to_string(), &mut mmdata.a_b);
-    let mut a21_times_b12 = matrix_multiply_s(&mut a21.to_vec(), &mut b12.to_vec(), mmdata, do_a, val);
+    let mut a21_times_b12 = matrix_multiply_s(&mut a21.to_vec(), &mut b12.to_vec(), mmdata);
 
     trace(a22[0][0].to_string(), &mut mmdata.a_b);
     trace(b22[0][0].to_string(), &mut mmdata.a_b);
-    let mut a22_times_b22 = matrix_multiply_s(&mut a22.to_vec(), &mut b22.to_vec(), mmdata, do_a, val);
+    let mut a22_times_b22 = matrix_multiply_s(&mut a22.to_vec(), &mut b22.to_vec(), mmdata);
 
     // trace(a21_times_b12[0][0].to_string(), &mut mmdata.temp);
     // trace(a22_times_b22[0][0].to_string(), &mut mmdata.temp);

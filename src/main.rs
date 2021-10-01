@@ -17,7 +17,7 @@ mod rttrace;
 // use crate::rttrace::Data;
 use instrumented_algorithms::{init,multiply,multiply_s, init_i32};
 // use nanorand::{Rng, WyRand};
-use lib::{dmd_from_trace};
+use lib::{reuse_distance_eff};
 
 // use crate::rttrace::Data;
 // use crate::rttrace::{init,trace};
@@ -76,20 +76,12 @@ fn test_mm_element() -> std::io::Result<()> {
             .required(true),
     )
     .arg(
-        Arg::with_name("a")
-            .short("a")
-            .long("track_a")
-            .help("specifies whether to track this value in A")
-            .takes_value(false)
-            .required(false),
-    )
-    .arg(
-        Arg::with_name("b")
-            .short("b")
-            .long("track_b")
-            .help("specifies whether to track this value in B")
-            .takes_value(false)
-            .required(false),
+        Arg::with_name("matrix")
+            .short("mat")
+            .long("matrix")
+            .help("specifies whether to track val in A or B")
+            .takes_value(true)
+            .required(true),
     )
     .get_matches();
 
@@ -97,21 +89,25 @@ fn test_mm_element() -> std::io::Result<()> {
 
     let x: usize = matches.value_of("X_VALUE").unwrap().parse::<usize>().unwrap();
     let y: usize = matches.value_of("Y_VALUE").unwrap().parse::<usize>().unwrap();
-
+    let mat = matches.value_of("matrix").unwrap();
     let (mut a, mut b) = init(size);
     let val; 
-    let do_a;
-
-    if matches.is_present("a"){
-        do_a = true;
+    //let do_a;
+    
+    if mat.eq("a") || mat.eq("A"){
+        //do_a = true;
         val = a[x][y];
     }
     else{
-        do_a = false;
+        //do_a = false;
         val = b[x][y];
     }
-    let (_c, mmdata) = multiply_s(&mut a,&mut b,do_a,&val);
-    println!("{:#?}", mmdata.a_b.freq_map);
+
+
+    let (_c, mmdata) = multiply_s(&mut a,&mut b);
+    let trace = mmdata.a_b.trace;
+    let map = reuse_distance_eff(*trace,val);
+    println!("{:#?}", map);
     Ok(())
 }
 

@@ -15,8 +15,8 @@ pub fn multiply(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<us
     mm(a,b)
 }
 
-pub fn multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, do_a: bool, val: &usize) -> (Vec<Vec<usize>>, MMData){
-    mm_s(a,b,do_a,val)
+pub fn multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
+    mm_s(a,b)
 }
 
 pub fn init(size: usize) -> (Vec<Vec<usize>>, Vec<Vec<usize>>){
