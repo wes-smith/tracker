@@ -2,7 +2,7 @@ mod matrix_multiply;
 mod quick_sort;
 mod strassen;
 
-use matrix_multiply::{mm, init_mat,init_mat_i32};
+use matrix_multiply::{mm, mm_s, init_mat,init_mat_i32};
 use quick_sort::{quick_sort_rt,init_arr};
 use strassen::{strassen_mm};
 use crate::rttrace::{Data,MMData};
@@ -13,6 +13,10 @@ pub fn strassen(a:&mut Vec<Vec<i32>>, b: &mut Vec<Vec<i32>>) -> (Vec<Vec<i32>>, 
 
 pub fn multiply(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>) -> (Vec<Vec<usize>>, MMData){
     mm(a,b)
+}
+
+pub fn multiply_s(a: &mut Vec<Vec<usize>>, b: &mut Vec<Vec<usize>>, do_a: bool, val: &usize) -> (Vec<Vec<usize>>, MMData){
+    mm_s(a,b,do_a,val)
 }
 
 pub fn init(size: usize) -> (Vec<Vec<usize>>, Vec<Vec<usize>>){

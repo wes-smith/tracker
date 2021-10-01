@@ -213,7 +213,7 @@ pub fn dmd(dist: HashMap<usize, usize>) -> f32 {
 }
 
 pub fn dmd_from_trace(trace: Vec<&str>) -> f32 {
-    let (freq_map, _hash_map) = reuse_distance(trace);
+    let freq_map = reuse_distance_eff(trace);
     dmd(freq_map)
 }
 

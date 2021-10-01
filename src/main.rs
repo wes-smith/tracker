@@ -3,8 +3,11 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 
+extern crate clap;
+use clap::{App, Arg};
+
 mod instrumented_algorithms;
-// mod lib;
+mod lib;
 // mod parse;
 mod rttrace;
 
@@ -12,8 +15,9 @@ mod rttrace;
 
 // use instrumented_algorithms::init_arr;
 // use crate::rttrace::Data;
-use instrumented_algorithms::{init,multiply, init_i32};
+use instrumented_algorithms::{init,multiply,multiply_s, init_i32};
 // use nanorand::{Rng, WyRand};
+use lib::{dmd_from_trace};
 
 // use crate::rttrace::Data;
 // use crate::rttrace::{init,trace};
@@ -25,7 +29,10 @@ use std::io::prelude::*;
 
 
 fn main() -> std::io::Result<()> {
-    test_stras()?;
+    test_mm_element()?;
+    
+    
+    //test_stras()?;
     // let mut a = Vec::new();
     // let mut b = Vec::new();
     // a.push(vec![1,2]);
@@ -35,6 +42,76 @@ fn main() -> std::io::Result<()> {
 
     // let (c, mmdata) = strassen(&mut a,&mut b);
     // println!("{:?}", c);
+    Ok(())
+}
+
+fn test_mm_element() -> std::io::Result<()> {
+    let matches = App::new("Matrix multiplication")
+    .author("Aidan Goldfarb <agoldfa7@u.rochester.edu>")
+    .about("Matrix multiplication tracking rdd of only a single specified element")
+    .arg(
+        Arg::with_name("SIZE")
+            .short("s")
+            .long("size")
+            .help("Sets matrix dimensions")
+            .required(true)
+            .takes_value(true),
+    )
+    .arg(
+        Arg::with_name("X_VALUE")
+            .short("x")
+            .long("x")
+            .help("specifies x or row to track")
+            .takes_value(true)
+            .default_value("0")
+            .required(true),
+    )
+    .arg(
+        Arg::with_name("Y_VALUE")
+            .short("y")
+            .long("y")
+            .help("specifies y or column to track")
+            .takes_value(true)
+            .default_value("0")
+            .required(true),
+    )
+    .arg(
+        Arg::with_name("a")
+            .short("a")
+            .long("track_a")
+            .help("specifies whether to track this value in A")
+            .takes_value(false)
+            .required(false),
+    )
+    .arg(
+        Arg::with_name("b")
+            .short("b")
+            .long("track_b")
+            .help("specifies whether to track this value in B")
+            .takes_value(false)
+            .required(false),
+    )
+    .get_matches();
+
+    let size: usize = matches.value_of("SIZE").unwrap().parse::<usize>().unwrap();
+
+    let x: usize = matches.value_of("X_VALUE").unwrap().parse::<usize>().unwrap();
+    let y: usize = matches.value_of("Y_VALUE").unwrap().parse::<usize>().unwrap();
+
+    let (mut a, mut b) = init(size);
+    let val; 
+    let do_a;
+
+    if matches.is_present("a"){
+        do_a = true;
+        val = a[x][y];
+    }
+    else{
+        do_a = false;
+        val = b[x][y];
+    }
+    let (_c, mmdata) = multiply_s(&mut a,&mut b,do_a,&val);
+    println!("{:#?}", mmdata.a_b.freq_map);
     Ok(())
 }
 
