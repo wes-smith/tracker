@@ -103,9 +103,10 @@ fn test_mm_element() -> std::io::Result<()> {
         val = b[x][y];
     }
 
-
     let (_c, mmdata) = multiply_s(&mut a,&mut b);
+    //println!("A: {:?}\nB: {:?}\nC: {:?}", a,b,_c);
     let trace = mmdata.a_b.trace;
+    //println!("{:?}", trace);
     let map = reuse_distance_eff(*trace,val);
     println!("{:#?}", map);
     Ok(())

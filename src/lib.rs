@@ -210,6 +210,7 @@ pub fn reuse_distance_eff(trace: Vec<String>, target: usize) -> HashMap<usize, u
     for val in trace.iter(){
         // println!("{:?}", stack);
         if stack.contains(&val) && (**val).parse::<usize>().unwrap() == target{ //resuse
+            //println!("val: {}", val);
             let position = stack.iter().position(|&x| x == val).unwrap();  //get position in stack
             if position == stack.len()-1{ //top of stack
                 let freq = freq_map.entry(1).or_insert(0);
@@ -219,7 +220,7 @@ pub fn reuse_distance_eff(trace: Vec<String>, target: usize) -> HashMap<usize, u
                 let item = stack.remove(position);    //remove element and place at top
                 stack.push(item);
                 let temp_dist = stack.len()-position;
-                
+                //println!("DIST: {}\n", temp_dist);
                 let freq = freq_map.entry(temp_dist).or_insert(0);
                 *freq += 1;
             }
