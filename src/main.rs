@@ -92,18 +92,18 @@ fn test_mm_element() -> std::io::Result<()> {
     let mat = matches.value_of("matrix").unwrap();
     let (mut a, mut b) = init(size);
     let val; 
-    //let do_a;
+    let do_a;
     
     if mat.eq("a") || mat.eq("A"){
-        //do_a = true;
+        do_a = true;
         val = a[x][y];
     }
     else{
-        //do_a = false;
+        do_a = false;
         val = b[x][y];
     }
 
-    let (_c, mmdata) = multiply_s(&mut a,&mut b);
+    let (_c, mmdata) = multiply_s(&mut a,&mut b,do_a);
     //println!("A: {:?}\nB: {:?}\nC: {:?}", a,b,_c);
     let trace = mmdata.a_b.trace;
     //println!("{:?}", trace);
